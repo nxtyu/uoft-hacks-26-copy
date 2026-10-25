@@ -1,0 +1,11 @@
+# Dependencies (only needed for the optional ?dials panel)
+node_modules/
+
+# OS and editor files
+.DS_Store
+*.code-workspace
+.vscode/
+.idea/
+
+# Local Claude Code settings
+.claude/settings.local.json

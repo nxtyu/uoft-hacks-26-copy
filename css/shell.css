@@ -1,0 +1,600 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   SHELL — app frame shared by every page
+
+   Reset, sidebar and nav, page header band, buttons, toolbars and the
+   page-level layout that every screen sits in.
+   ───────────────────────────────────────────────────────────────────────── */
+
+
+* {
+  box-sizing: border-box;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  height: 100vh;
+  overflow: hidden;
+  line-height: 1.55;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+.app-shell {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.content-area {
+  min-width: 0;
+  min-height: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.page[hidden] {
+  display: none !important;
+}
+
+.sidebar {
+  /* Token so the brand divider can cancel the gutter and run wall to wall. */
+  --sidebar-pad-x: 24px;
+  /* One left edge for the whole rail: the wordmark, the logo and every nav
+     icon start here. The brand and the nav used to compute it separately,
+     which is how the icons ended up 25px right of "Dashboard". */
+  --nav-content-x: calc(var(--sidebar-pad-x) + 8px);
+  /* The active pill is wider than that edge on purpose — it reaches out past
+     the icons toward both walls, so it reads as a band behind the row rather
+     than a box around the label. Alignment comes from the icon, never from
+     the pill. */
+  --nav-pill-inset: 14px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 32px var(--sidebar-pad-x) 28px;
+  background: var(--nav-bg);
+  color: var(--nav-ink);
+  /* The design draws a hairline where the rail meets the page. */
+  border-right: 1px solid var(--tf-c-divider);
+}
+
+/* The nav icons and the wordmark ship as black-stroked SVGs loaded through
+   <img>, so they cannot take currentColor. On the navy they are knocked out
+   to white instead — cheaper than a second set of assets, and it keeps one
+   file per icon. */
+.sidebar img {
+  filter: brightness(0) invert(1);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 8px 28px;
+  /* Bleeds past the sidebar gutter and pays it back as padding, so the rule
+     below the logo touches both walls while the logo stays put. */
+  margin-inline: calc(var(--sidebar-pad-x) * -1);
+  padding-inline: var(--nav-content-x);
+  border-bottom: 1px solid var(--nav-divider);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.brand img {
+  width: 64px;
+  height: 40px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+nav {
+  display: grid;
+  gap: 6px;
+  padding-top: 20px;
+}
+
+.nav-link {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  /* Measured off the design's side panel: 44px rows, a 300px pill inset 14px
+     from each wall, 20px icons with a 16px gap to the label. */
+  min-height: 44px;
+  gap: 16px;
+  /* Pull the pill out to its own inset, then pad back in so the icon lands
+     on --nav-content-x with the wordmark above it. */
+  margin-inline: calc(var(--nav-pill-inset) - var(--sidebar-pad-x));
+  padding-inline: calc(var(--nav-content-x) - var(--nav-pill-inset));
+  color: var(--nav-ink);
+  font-size: var(--tf-text-name);
+  font-weight: 600;
+  text-decoration: none;
+  /* No border: it was transparent and nothing ever coloured it, but its 1px
+     pushed every icon a pixel off the wordmark's edge. */
+  border: 0;
+  border-radius: var(--tf-radius-control);
+  transition: background 150ms ease;
+}
+
+.nav-link:hover {
+  background: var(--nav-hover);
+}
+
+/* The active item is a filled pill rather than a rule or a weight change:
+   on a dark rail a lighter fill is the only cue that stays legible at the
+   16px icon size the nav runs at. */
+.nav-link.active {
+  background: var(--nav-active);
+}
+
+.nav-link.active:hover {
+  background: #626fb3;
+}
+
+.nav-link img {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.user {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: auto;
+  padding: 12px 8px 0;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #7394b4;
+  object-fit: cover;
+}
+
+.user div {
+  min-width: 0;
+  display: grid;
+}
+
+.user strong,
+.user span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user strong {
+  font-size: var(--tf-text-ui);
+  font-weight: 600;
+}
+
+.user span {
+  color: var(--nav-ink-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+/* The avatar's fill is a light gray authored into the asset; on the navy it
+   needs no knockout, so it opts out of the sidebar-wide invert. */
+.sidebar .avatar {
+  filter: none;
+}
+
+main {
+  /* Held as tokens so full-bleed children can cancel the page gutter, and so
+     the chrome can solve its own height against the top inset. */
+  --page-pad-x: 48px;
+  --page-pad-top: 72px;
+  --page-pad-bottom: 40px;
+  height: 100vh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: var(--page-pad-top) var(--page-pad-x) var(--page-pad-bottom);
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   The split: a white header band, a hairline, then the work area on the page
+   ground with white cards on it.
+
+   Team Finder had this and the calendar pages did not, which is most of why
+   they read as a different product — a white card on a white page is only a
+   border, so the whole screen sat on one plane. Both classes bleed to the
+   window edges the way the tab strip's rule does and pay the gutter back as
+   padding, so only the surface reaches the edge, never the content.
+
+   Shift Manager swaps three toolbar/view pairs by mode, so its toolbars are
+   grouped above one shared body wrapper; only one pair is ever visible, so
+   the order change is invisible and the structure becomes honest.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Closes the white band. Scoped to a direct child of .page so it outranks
+   each toolbar's own margins, which are declared later in the file. */
+.page > .page-band-end {
+  position: relative;
+  /* Above the work area's own layers — the day-header strip sits at 4 and
+     event blocks at 2. At 1 this context ranked below them, so the month
+     picker's popup opened *behind* the calendar it belongs to. */
+  z-index: 20;
+  margin-inline: calc(var(--page-pad-x) * -1);
+  padding-inline: var(--page-pad-x);
+  /* The gap under the toolbar belongs to the band, not to the content, or a
+     white strip appears between the rule and the ground. */
+  padding-bottom: 28px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--tf-c-divider);
+  background: var(--tf-c-surface);
+}
+
+/* The work area. Bleeds to the window edges like the band above it, and runs
+   to the bottom of the viewport by cancelling the page's own bottom padding
+   and re-adding it inside, so the ground never stops short above the fold.
+   It is a real wrapper rather than a class on the content, because a card
+   that was also the region would paint its own white over the ground. */
+.page > .page-body {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-inline: calc(var(--page-pad-x) * -1);
+  margin-bottom: calc(var(--page-pad-bottom) * -1);
+  padding: 28px var(--page-pad-x) var(--page-pad-bottom);
+  background: var(--tf-c-ground);
+}
+
+/* A page with no toolbar still needs the band to close at the same height
+   as Team Finder's tabs strip (title → 36px gap → 88px chrome). */
+.page > .page-band-end.page-band-plain {
+  box-sizing: border-box;
+  min-height: 88px;
+  margin-top: 36px;
+  padding-bottom: 0;
+}
+
+/* Placeholder body for the nav entries the design names but has no screen
+   for yet. Deliberately plain — it should read as "nothing here yet", not as
+   a designed empty state that someone might mistake for finished work. */
+.page-placeholder {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+}
+
+.page-placeholder p {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-body);
+  line-height: 1.6;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+/* Sits above the band's upward backdrop, which is painted by a child of the
+   toolbar below it and would otherwise cover the title. */
+.page-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.page-header-actions .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 10px 18px;
+  font-weight: 600;
+}
+
+.page-header-actions .button img {
+  width: 16px;
+  height: 16px;
+  opacity: 1;
+  flex-shrink: 0;
+}
+
+/* Same overall band height as before; buttons sit a little higher in it
+   (tighter gap under the title, a bit more space above the hairline). */
+.page-chrome {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  min-height: 64px;
+  margin-top: 14px;
+  padding-block: 0 18px;
+  background: #fff;
+  z-index: 6;
+}
+
+.page-chrome .page-header-actions {
+  width: 100%;
+  align-items: center;
+}
+
+.page > .page-chrome.page-band-end {
+  padding-bottom: 18px;
+  min-height: 64px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2 {
+  font-weight: 700;
+}
+
+/* One page title across the dashboard — the Team Finder title, promoted.
+   The calendar pages used a viewport-scaled clamp that grew to 38px while
+   Team Finder sat at a fixed 30px, so the two never lined up at the same
+   viewport. The scoped #page-teamfinder override that used to set this is
+   gone; these values are it.
+
+   margin-bottom is 0 now that no page carries a subtitle under its title —
+   the space below the header belongs to the band. */
+h1 {
+  margin-bottom: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-el-title-size);
+  font-weight: var(--tf-el-title-weight);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.page-header > div > p:last-child {
+  margin-bottom: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-railcopy-size);
+  line-height: 1.65;
+}
+
+.calendar-toolbar {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  margin: 28px 0 24px;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* Controls sit on the card stroke and a white face, matching the Team Finder
+   controls. They were filled gray on a gray page, which left the toolbar
+   reading as one soft block instead of a row of separate targets. */
+.button,
+.icon-button {
+  min-height: 40px;
+  border: 1px solid var(--tf-c-stroke);
+  border-radius: var(--tf-radius-control);
+  background: var(--tf-c-surface);
+  cursor: pointer;
+  transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.button:hover,
+.icon-button:hover {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-subtle);
+}
+
+.button:active,
+.icon-button:active {
+  transform: translateY(1px);
+}
+
+.button:focus-visible,
+.icon-button:focus-visible,
+.calendar-event:focus-visible,
+.close-button:focus-visible,
+.mobile-nav:focus-visible,
+.text-button:focus-visible,
+.danger-button:focus-visible,
+.nav-link:focus-visible,
+.multi-select-trigger:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--tf-c-focus);
+  outline-offset: 2px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--text-control);
+  font-weight: 600;
+}
+
+.icon-button {
+  width: 40px;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+}
+
+.icon-button img {
+  width: 18px;
+  height: 18px;
+}
+
+.arrow-forward {
+  transform: rotate(180deg) scaleY(-1);
+}
+
+/* The page's one commit, solid in the accent — the same object as Team
+   Finder's Request button. Showcase padding is a step roomier than the
+   Figma 8/16 so primary actions don't feel cramped. */
+.primary-button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 10px 18px;
+  border-color: var(--tf-c-action);
+  background: var(--tf-c-action);
+  color: var(--tf-c-text-on-action);
+}
+
+.primary-button:hover,
+.submit-button:hover {
+  border-color: var(--tf-c-action-hover);
+  background: var(--tf-c-action-hover);
+  color: var(--tf-c-text-on-action);
+}
+
+.primary-button:active,
+.submit-button:active {
+  border-color: var(--tf-c-action-active);
+  background: var(--tf-c-action-active);
+}
+
+/* Glyphs inside a solid button are black-stroked assets, so they get the
+   same knockout the sidebar icons do. */
+.primary-button img,
+.submit-button img {
+  filter: brightness(0) invert(1);
+}
+
+.today-button,
+.primary-button,
+.submit-button {
+  font-weight: 700;
+}
+
+.primary-button img {
+  width: 16px;
+  height: 16px;
+}
+
+.filter-menu {
+  position: absolute;
+  z-index: 20;
+  top: 44px;
+  right: 0;
+  width: 200px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 14px 34px rgba(24, 24, 27, 0.12);
+}
+
+.filter-menu p {
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filter-menu label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.filter-menu label:hover {
+  color: var(--ink);
+}
+
+.filter-section {
+  margin: 0 -8px 4px;
+  padding: 8px 8px 0;
+  border-top: 1px solid var(--tf-c-divider);
+}
+
+.calendar-card {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--tf-radius-card);
+  background: var(--calendar);
+}
+
+.calendar-heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 28px;
+  margin-bottom: 8px;
+  padding: 0 16px 0 80px;
+}

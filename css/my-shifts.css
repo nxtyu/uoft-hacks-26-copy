@@ -1,0 +1,258 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   MY SHIFTS
+
+   Volunteer view of their own assigned shifts.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* My Shifts — volunteer schedule view */
+#page-myshifts[hidden] {
+  display: none !important;
+}
+
+.myshifts-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  min-height: 88px;
+  margin: 36px 0 0;
+}
+
+.myshifts-toolbar .calendar-nav {
+  align-items: center;
+  min-height: 40px;
+  gap: 6px;
+}
+
+.myshifts-month-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--tf-radius-control);
+  background: transparent;
+  color: var(--tf-c-text-primary);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.myshifts-identity {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 8px;
+  min-height: 36px;
+  min-width: 0;
+  color: var(--tf-c-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.myshifts-identity-sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--tf-c-stroke);
+  flex: 0 0 auto;
+}
+
+.myshifts-split {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 20px;
+}
+
+.myshifts-calendar-card,
+.myshifts-detail-panel {
+  min-width: 0;
+  min-height: 0;
+}
+
+.myshifts-calendar-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.myshifts-detail-panel {
+  padding: 24px 28px;
+  background: #fff;
+  overflow: auto;
+}
+
+.myshifts-detail-empty {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  text-align: center;
+}
+
+.myshifts-detail-empty p {
+  margin: 0;
+  max-width: 240px;
+  color: var(--tf-c-text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.myshifts-detail[hidden],
+.myshifts-detail-empty[hidden] {
+  display: none !important;
+}
+
+.myshifts-detail-header {
+  margin: 0 0 24px;
+  padding: 0 0 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.myshifts-detail-header h2 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.myshifts-detail-datetime {
+  margin: 0;
+  color: var(--tf-c-text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.myshifts-detail-facts {
+  margin-top: 16px;
+}
+
+.myshifts-detail-body {
+  display: grid;
+  gap: 18px;
+}
+
+.myshifts-detail-row {
+  display: grid;
+  gap: 6px;
+}
+
+.myshifts-detail-label {
+  color: var(--tf-c-text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.myshifts-detail-row p {
+  margin: 0;
+  color: var(--tf-c-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 19px;
+}
+
+#myshifts-calendar {
+  min-width: 0;
+}
+
+#myshifts-calendar-grid .myshifts-event {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: var(--event-pad-y) var(--event-pad-x);
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  outline: none;
+  background-color: var(--event-color);
+  background-image: none;
+  box-shadow: none;
+}
+
+#myshifts-calendar-grid .myshifts-event .event-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--event-line-gap);
+  min-width: 0;
+  flex: 1;
+}
+
+#myshifts-calendar-grid .myshifts-event.is-compact .event-main {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+
+#myshifts-calendar-grid .myshifts-event:hover {
+  background-color: color-mix(in srgb, var(--event-color) 78%, white);
+}
+
+#myshifts-calendar-grid .myshifts-event.is-selected {
+  background-color: var(--event-color);
+  border-radius: 4px 6px 6px 4px;
+  box-shadow: inset 4px 0 0 0 currentColor;
+}
+
+@media (max-width: 1100px) {
+  main#page-myshifts,
+  main#page-shifts {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .shift-split,
+  .myshifts-split {
+    grid-template-columns: 1fr;
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .shift-half:not(.shift-assign-panel),
+  .myshifts-calendar-card {
+    flex: 0 0 auto;
+    height: min(52vh, 520px);
+    min-height: 360px;
+    overflow: hidden;
+  }
+
+  .shift-assign-panel,
+  .myshifts-detail-panel {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .shift-assign-main {
+    height: auto;
+    overflow: visible;
+  }
+
+  .shift-assign-panel-empty {
+    min-height: 200px;
+  }
+
+  .myshifts-detail-empty {
+    min-height: 200px;
+  }
+
+  .myshifts-detail-empty p {
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 900px) {
+  .shift-table th:nth-child(3),
+  .shift-table td:nth-child(3) {
+    display: none;
+  }
+}

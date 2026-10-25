@@ -1,0 +1,397 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   TOKENS — fonts and design tokens
+
+   Load first. Holds the @font-face rules for Area, the dashboard-wide
+   legacy aliases (--ink, --line, --blue …), and the --tf-* design-system
+   ramp they point to. Change a value here and every page follows.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Area — same family as the Figma file (Area Variable). Static cuts ship
+   here because the download is the OTF family; Bold/SemiBold map to 700/600
+   the way the Variable named instances do in Figma. */
+@font-face {
+  font-family: "Area";
+  src: url("../assets/fonts/Area-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Area";
+  src: url("../assets/fonts/Area-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Area";
+  src: url("../assets/fonts/Area-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Area";
+  src: url("../assets/fonts/Area-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Area";
+  src: url("../assets/fonts/Area-Extrabold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Area";
+  src: url("../assets/fonts/Area-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+:root {
+  /* ── The dashboard runs on the Team Finder design system ─────────────────
+     Team Finder was built first against the Figma source and grew its own
+     --tf-* ramp (declared in the Team Finder block further down). Rather than
+     keep a second, near-miss palette alive for the calendar pages, the legacy
+     names below are now aliases onto that ramp: one edit to a --tf-c-* token
+     moves every page at once.
+
+     The two ramps were close but not the same — the old one was Tailwind zinc
+     (#18181b / #71717a / #e4e4e7), very slightly blue; the design's is a pure
+     neutral gray (#3d3d3d / #585858 / #e1e1e1). Mixed on one screen the tint
+     difference reads as a smudge, which is what this removes.
+
+     Custom properties resolve where they are used, not where they are
+     declared, so aliasing forward to a block below is fine. */
+
+  /* Text */
+  --ink: var(--tf-c-text-name);        /* default inherited ink (#3d3d3d) */
+  --muted: var(--tf-c-text-secondary);
+  --subtle: var(--tf-c-text-tertiary);
+
+  /* Lines + surfaces */
+  --line: var(--tf-c-divider);
+  --panel: var(--tf-c-surface-subtle);
+  --calendar: var(--tf-c-surface);     /* cards are white, per the design */
+
+  /* Action. Was a neutral gray (#52525b) standing in for an accent; the
+     design has a real one, so the primary button and eyebrow now carry it. */
+  --accent: var(--tf-c-action);
+  --accent-soft: var(--tf-c-action-soft);
+  --button-hover: var(--tf-c-surface-hover);
+  --button-hover-border: var(--tf-c-stroke-strong);
+
+  /* Calendar event fill — the navy at the low end of its own ramp, so a
+     scheduled block reads as the same family as an action, not a fourth hue. */
+  --blue: var(--event-default-fill);
+  --blue-ink: var(--event-default-ink);
+
+  /* ── Shared type sizes ──────────────────────────────────────────────────
+     Sized a step up from the Figma frames for showcase readability —
+     especially secondary copy (event details, captions) which felt tiny
+     on screen even when the weights matched. */
+  --text-control: 15px;      /* buttons, inputs, table cells, day headers */
+  --text-meta: 14px;         /* secondary copy under a control or a title */
+  --text-caption: 13px;      /* event location, chips, indicators */
+  --text-micro: 12px;        /* time axis, counts, badges */
+  --text-event-title: 16px;  /* a calendar block's own name */
+
+  /* Hour height. A block needs to hold two lines of type plus its padding
+     without clipping: 10 + 18 (title) + 6 (gap) + 16 (location) + 10 = 60,
+     and the shortest event on the calendar is one hour. At 56 the location's
+     descenders were being cut off. Raise this to give the grid more air —
+     everything that positions an event reads the same token. */
+  --row-height: 72px;
+  --event-pad-y: 10px;
+  --event-pad-y-compact: 6px;   /* a 30-minute block holds one line */
+  --event-pad-x: 12px;
+  --event-line-gap: 6px;
+  --radius: var(--tf-radius-card);
+  --hours-in-view: 24;
+  font-family: "Area", "DM Sans", Arial, sans-serif;
+  font-optical-sizing: auto;
+  color: var(--ink);
+  background: var(--tf-c-surface);
+  font-synthesis: none;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* Team Finder tokens live on :root, not on #page-teamfinder, because the
+   Team Finder dialogs are rendered outside that element (end of <body>).
+   Scoped to the page they resolved to nothing inside every modal. */
+:root {
+  /* ── Type scale ─────────────────────────────────────────────────────────
+     From the Figma source (nodes 333:913+). The design is set in Area
+     Variable; we ship static Area OTFs (Regular/Medium/Semibold/Bold).
+     Named instances map Bold -> 700 and SemiBold -> 600.
+
+     Showcase sizes sit a step above the Figma frames where secondary copy
+     was hard to read on screen (card bios, event details, rail copy). */
+  --tf-text-title: 30px;         /* page H1 — Bold 30 in Figma */
+  --tf-text-subject: 20px;       /* the subject of a section (team name) */
+  --tf-text-rail-title: 18px;    /* rail / intro heading */
+  --tf-text-tab: 16px;           /* tab strip */
+  --tf-text-section: 16px;
+  --tf-text-name: 16px;          /* card + row names / nav */
+  --tf-text-ui: 14px;
+  --tf-text-body: 14px;          /* rail copy, filter options, row copy */
+  --tf-text-manage-body: 14px;
+  --tf-text-label: 14px;
+  --tf-text-card: 13px;          /* card bio + meta — Figma 11, bumped up */
+  --tf-text-chip: 12px;
+
+  --tf-weight-bold: 800;
+  --tf-weight-strong: 700;
+  --tf-weight-medium: 600;
+
+  /* ── Per-element type ───────────────────────────────────────────────────
+     The scale above says how big "body" is; this layer says what each part
+     of the page actually uses. They start as aliases, so the page looks
+     identical, but every element can now be moved on its own — before this,
+     one token fed several places at once (card names and row titles shared
+     --tf-text-name), so tuning one thing dragged its neighbours along.
+
+     These are what the dev dials (js/dials.js, ?dials) write to. */
+  --tf-el-title-size: var(--tf-text-title);
+  --tf-el-title-weight: var(--tf-weight-bold);
+
+  --tf-el-tab-size: 17px;
+  --tf-el-tab-weight: 700;
+
+  --tf-el-heading-size: 20px;
+  --tf-el-heading-weight: var(--tf-weight-bold);
+
+  --tf-el-railcopy-size: 15px;   /* Figma rail intro is SemiBold 13 */
+  --tf-el-railcopy-weight: 700;
+
+  --tf-el-filter-label-size: 16px;
+  --tf-el-filter-label-weight: 700;
+  --tf-el-filter-option-size: 15px;
+  --tf-el-filter-option-weight: 600;
+
+  --tf-el-card-name-size: 17px;
+  --tf-el-card-name-weight: var(--tf-weight-bold);
+  --tf-el-card-bio-size: 14px;
+  --tf-el-card-bio-weight: 700;
+  --tf-el-card-meta-size: 14px;
+  --tf-el-card-meta-weight: 600;
+  --tf-el-card-meta-label-weight: 700;
+  --tf-el-card-chip-size: 12px;
+  --tf-el-card-chip-weight: 600;
+  --tf-el-card-btn-size: 14px;
+  --tf-el-card-btn-weight: 700;
+  --tf-el-card-btn-border: 1px;
+  /* Inner breathing room on the request button; min-height is only a floor
+     now, so this is what actually sets the button's height. */
+  --tf-el-card-btn-pad-y: 12px;
+  --tf-el-card-btn-pad-x: 18px;
+
+  /* Leading, per text block. These were one shared --tf-card-leading, so the
+     bio and the meta rows could not be spaced apart from each other. */
+  --tf-el-card-name-leading: 28px;
+  --tf-el-card-bio-leading: 24px;
+  --tf-el-card-meta-leading: 23px;
+
+  /* Card subtitle — the line directly under the name. In the design this is
+     the same object on every tab: a hacker's program and school, a team's
+     member count, a request's origin. Tertiary and regular, so it reads as
+     an attribute of the name rather than a second heading. */
+  --tf-el-card-sub-size: var(--text-meta);
+  --tf-el-card-sub-weight: 600;
+  --tf-el-card-sub-leading: 22px;
+
+  /* Same correction as the card equivalents — a request row's name is the
+     same object as a card's name (Figma 15 Bold), its subtitle the same as a
+     card's body (Figma 11 SemiBold), so they carry the same corrected values
+     rather than sitting a step smaller than everything around them. */
+  --tf-el-row-title-size: 17px;
+  --tf-el-row-title-weight: 600;
+  --tf-el-row-copy-size: 14px;
+  --tf-el-row-copy-weight: 500;
+
+  /* Requests panel. Sizes are the Figma values carried through the same
+     correction as the rest of the page — Figma 15 -> 17, 11 -> 14, and
+     SemiBold -> 400 — so this panel sits on one scale with the others
+     rather than reintroducing the small type the dials were used to fix. */
+  --tf-el-section-size: 17px;      /* Figma 15 — "Incoming" / "Outgoing" */
+  --tf-el-section-weight: 500;     /* Figma SemiBold */
+  --tf-el-request-action-size: 14px; /* Figma 11 — Decline / Accept */
+  --tf-request-card-pad: 24px;
+  --tf-request-card-gap: 16px;
+  --tf-request-section-gap: 40px;
+  --tf-request-action-gap: 24px;   /* Decline -> Accept */
+  --tf-request-copy-gap: 30px;     /* copy column -> actions */
+  --tf-manage-section-pad: 52px;   /* section content -> its dividing rule */
+
+  /* ── Radii ──────────────────────────────────────────────────────────── */
+  --tf-radius-card: 10px;
+  --tf-radius-control: 8px;
+  --tf-radius-chip: 8px;
+  --tf-radius-check: 4px;
+
+  /* ── Spacing ────────────────────────────────────────────────────────── */
+  --tf-card-pad: 24px;
+  --tf-grid-gap: 28px;
+  --tf-card-border: 1px;        /* card hairline */
+  --tf-card-gap: 12px;          /* name row -> bio */
+  --tf-card-bio-lines: 3;       /* bio clamp, per the design */
+  --tf-card-action-gap: 32px;   /* body -> action row */
+  --tf-card-action-pair-gap: 14px;  /* "View profile" -> "Request" */
+  --tf-card-action-min-width: 86px; /* keeps every commit the same size */
+  --tf-card-body-gap: 12px;     /* bio -> meta block */
+  --tf-card-meta-gap: 8px;      /* between meta rows */
+  --tf-card-leading: 22px;      /* bio + meta line height */
+  --tf-tab-gap: 48px;          /* between tab labels */
+  --tf-rail-title-gap: 36px;   /* rail heading block -> filter groups */
+  --tf-rail-group-gap: 32px;   /* between filter groups */
+  --tf-rail-option-gap: 8px;   /* between checkbox rows */
+
+  /* The left title/description rail. Hackers/Teams draw it with
+     .teamfinder-sidebar inside .teamfinder-layout; Requests/Manage draw it with
+     .teamfinder-page-intro inside .teamfinder-page-layout. Different elements in
+     different grids, so the column has to come from one token or the rail
+     shifts width when you change tabs. */
+  --tf-rail-width: minmax(180px, 201px);
+  --tf-rail-gap: 66px;
+
+  /* ── Color roles ────────────────────────────────────────────────────────
+     Taken from the Figma source rather than re-derived: the design runs a
+     pure-neutral gray ramp (no hue) against a single blue, so the neutrals
+     are stated as the exact hexes the design uses. Blue still carries one
+     meaning only — this is actionable — which is what keeps it legible at
+     the density the card grid runs at.
+
+     NOTE: --tf-c-text-tertiary was the design's #8d8d8d, 3.3:1 on white and
+     below the 4.5:1 WCAG AA floor at these sizes. That was survivable while
+     it only dressed Team Finder's filter rail; now that the whole dashboard
+     reads from this ramp it also sets every page description and table
+     caption, so it is raised to #757575 — 4.6:1 on white, 4.3:1 on the
+     subtle surface, and visually near-indistinguishable from the source. */
+
+  /* Text */
+  --tf-c-text-primary: #000;      /* page title, tabs, rail heading */
+  --tf-c-text-name: #3d3d3d;      /* card + row names */
+  --tf-c-text-secondary: #585858; /* card bio, group labels, chips */
+  --tf-c-text-tertiary: #757575;  /* rail copy, filter options, card meta */
+  --tf-c-text-disabled: #c5c5c5;
+  --tf-c-text-on-action: #fff;
+
+  /* Lines */
+  --tf-c-divider: #e1e1e1;        /* structural hairlines */
+  --tf-c-stroke: #c5c5c5;         /* card + control border */
+  --tf-c-stroke-strong: #a8a8a8;  /* hover / emphasis border */
+
+  /* Surfaces.
+     --tf-c-ground is the page behind the cards. It is what makes a white card
+     read as a card: the design runs content on #fafafa and lifts every panel
+     to white on top of it, so the hairline reinforces a real edge instead of
+     drawing one on an identical surface. */
+  --tf-c-ground: #fafafa;
+  --tf-c-surface: #fff;
+  --tf-c-surface-subtle: #f6f6f6;
+  --tf-c-surface-sunken: #f1f1f1; /* chip fill */
+  --tf-c-surface-hover: #ececec;
+
+  /* Action — the only chroma in the system.
+     Navy, taken from the final Figma (node 333:654): the same value carries
+     the side panel, the active tab rule and the primary button, which is what
+     ties the chrome to the content. The earlier #0169ce was a brighter blue
+     from an older frame and did not match the shipped side panel. */
+  --tf-c-action: #1b2c88;
+  --tf-c-action-hover: #16246e;
+  --tf-c-action-active: #111b54;
+  --tf-c-action-soft: #f2f4ff;      /* "Requested" fill */
+  --tf-c-action-soft-hover: #e6eaff;
+  --tf-c-action-soft-line: #d7dbf0; /* soft button's own hairline */
+  --tf-c-action-text: #1b2c88;
+
+  /* Disabled actions go neutral, never pale blue: a blue-tinted disabled
+     button still reads as available. Paired with a label change in JS
+     ("Request" -> "Requested"), so state is never color-only. */
+  --tf-c-action-disabled: #f6f6f6;
+  --tf-c-action-disabled-line: #e1e1e1;
+  --tf-c-action-disabled-text: #c5c5c5;
+
+  --tf-c-focus: #1b2c88;
+
+  /* ── Side panel ─────────────────────────────────────────────────────────
+     The navy rail from the design. It is the one dark surface in the app, so
+     it carries its own small ramp rather than inverting the page tokens. */
+  --nav-bg: var(--tf-c-action);
+  --nav-ink: #fff;
+  --nav-ink-muted: rgba(255, 255, 255, 0.72);
+  --nav-active: #5663a7;             /* active pill, sampled from the design */
+  --nav-hover: rgba(255, 255, 255, 0.1);
+  --nav-divider: rgba(255, 255, 255, 0.18);
+
+  /* ── Calendar event fills ───────────────────────────────────────────────
+     Event type is a real category, so it keeps its hues — but they are
+     retuned onto one lightness step (~L93) so a week of mixed events reads
+     as one set rather than three unrelated pastels, and each ink clears AA
+     on its own fill. The default is the navy at the low end of its ramp, so
+     an untyped event belongs to the same family as the accent.
+
+     They sit a step deeper than the surface tints elsewhere in the system:
+     the blocks carry no border, so the fill alone has to separate a block
+     from the empty grid slot beside it. */
+  /* Bright, light fills — warm/lilac family so they separate from the mint
+     availability window and avoid blue/green type colours. */
+  --event-default-fill: #ffe6dc; /* coral */
+  --event-default-ink: #9a3412;
+  --event-food-fill: #fff1c9; /* amber */
+  --event-food-ink: #92400e;
+  --event-workshop-fill: #f3e8ff; /* lilac */
+  --event-workshop-ink: #6b21a8;
+  --event-social-fill: #ffe4ef; /* rose */
+  --event-social-ink: #9d174d;
+
+  /* Kept for legacy refs; selection now uses a left bar, not a darker fill */
+  --event-default-selected: #ffd0c0;
+  --event-food-selected: #ffe6a0;
+  --event-workshop-selected: #e9d5ff;
+  --event-social-selected: #fecdd3;
+
+  /* Semantic.
+     Danger has a soft pair like the accent does, so a destructive action can
+     be present without shouting: the Danger Zone's button is a tinted face
+     with a red label, not a filled red button. */
+  --tf-c-danger-soft: #ffe0e0;
+  --tf-c-danger-soft-hover: #ffd0d0;
+  --tf-c-danger-soft-text: #bf2e2d;  /* the design's #ec4949 is 3.0:1 on this
+                                        tint; darkened to 4.7:1 to clear AA
+                                        while reading as the same red. */
+  --tf-c-danger: #a12f3b;
+  --tf-c-danger-fill: #e8a0a0;
+  --tf-c-danger-ink: #5b161c;
+  --tf-c-danger-fill-hover: #de8f8f;
+  --tf-c-success-soft: #e8f5ee;
+  --tf-c-success-text: #2f6b4f;
+
+  /* Legacy aliases — existing rules keep working and inherit the new ramp. */
+  --tf-c-title: var(--tf-c-text-primary);
+  --tf-c-body: var(--tf-c-text-secondary);
+  --tf-c-soft: var(--tf-c-text-tertiary);
+  --tf-c-label: var(--tf-c-text-tertiary);
+  --tf-c-hint: var(--tf-c-text-tertiary);
+
+  /* One padding scale shared by every Team Finder modal. */
+  --tf-modal-pad-x: 24px;
+  --tf-modal-pad-top: 20px;
+  --tf-modal-pad-bottom: 20px;
+  --tf-modal-title-gap: 6px;   /* title -> supporting copy (one group) */
+  --tf-modal-block-gap: 16px;  /* copy -> field */
+  --tf-modal-actions-gap: 24px; /* content -> action row */
+  --tf-modal-close-inset: 8px; /* close button's own icon padding */
+}

@@ -1,0 +1,3147 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   TEAM FINDER
+
+   Hacker and team browsing, requests, manage-team and the profile and
+   note dialogs. Its design tokens live in tokens.css.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Team Finder — lo-fi */
+#page-teamfinder[hidden] {
+  display: none !important;
+}
+
+
+#page-teamfinder {
+  overflow: hidden;
+}
+
+#page-teamfinder .page-header {
+  flex-shrink: 0;
+  background: #fff;
+  z-index: 2;
+}
+
+
+
+.teamfinder-chrome {
+  flex-shrink: 0;
+  margin-top: 36px;
+  background: #fff;
+  z-index: 6;
+}
+
+/* Everything below the header rule sits on the page ground, bled to the
+   window edges the same way the toolbar's hairline is, so the white header
+   band and the gray work area read as two surfaces rather than one sheet
+   with a line across it. The padding pays back the negative margin so the
+   rail and the grid stay on the page gutter. */
+.teamfinder-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: var(--tf-rail-width) minmax(0, 1fr);
+  gap: var(--tf-rail-gap);
+  align-items: stretch;
+  margin-inline: calc(var(--page-pad-x) * -1);
+  margin-bottom: -40px; /* cancels the page's own bottom padding */
+  padding: 40px var(--page-pad-x) 0;
+  background: var(--tf-c-ground);
+}
+
+.teamfinder-layout.is-manage,
+.teamfinder-layout.is-requests {
+  --tf-section-gap: 40px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  max-width: none;
+  /* Not width:100% — the element is already pulled --page-pad-x to the left
+     to bleed the ground to the window edge, so a full parent width would end
+     that far short on the right and leave a white strip down the side. */
+  width: auto;
+  padding-top: 32px;
+  box-sizing: border-box;
+}
+
+.teamfinder-page-layout {
+  display: grid;
+  grid-template-columns: var(--tf-rail-width) minmax(0, 1fr);
+  column-gap: var(--tf-rail-gap);
+  align-items: start;
+  /* Trailing room so the last section clears the bottom of the scroll port
+     instead of ending flush against it. */
+  padding: 0 0 30px;
+}
+
+.teamfinder-page-intro {
+  position: sticky;
+  top: 0;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding-top: 0;
+}
+
+.teamfinder-page-intro h2 {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-el-heading-size);
+  font-weight: var(--tf-el-heading-weight);
+  letter-spacing: 0;
+  line-height: 21px;
+  text-wrap: balance;
+}
+
+.teamfinder-page-intro p {
+  margin: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-railcopy-size);
+  font-weight: var(--tf-el-railcopy-weight);
+  line-height: 20px;
+  text-wrap: pretty;
+}
+
+.teamfinder-page-content {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+}
+
+/* The groups are separated by space alone. The dividers that used to run
+   between them competed with the card strokes directly below, which is what
+   made the column read as two nested boxes instead of one list. */
+/* Manage Team is a settings page, so its sections are separated by a rule
+   and real vertical air rather than spacing alone. At a glance the page then
+   reads as four decisions — profile, visibility, members, danger — instead of
+   one long column, which is what the design is doing with the same hairline
+   it uses under the tab strip. The last section drops its rule so the page
+   does not end on a line. */
+.teamfinder-content-section {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  padding: 0 0 var(--tf-manage-section-pad);
+  border-bottom: 1px solid var(--tf-c-divider);
+}
+
+.teamfinder-content-section + .teamfinder-content-section {
+  padding-top: var(--tf-manage-section-pad);
+}
+
+.teamfinder-content-section:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+/* Section label — see the single rule below, which now sets this. */
+
+/* No margin here any more: a section's padding plus its rule is what sets
+   the rhythm, and a margin on top of that pushed the rule off centre —
+   28px of air above it, 68px below. */
+
+/* Merged into the single .teamfinder-content-section > h3 rule above — this
+   duplicate sat later in the file and silently won, so edits to the first
+   one did nothing. */
+.teamfinder-content-section > h3 {
+  margin: 0;
+  color: var(--tf-c-text-name);
+  font-size: var(--tf-el-section-size);
+  font-weight: var(--tf-el-section-weight);
+  letter-spacing: 0;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.teamfinder-content-section .teamfinder-empty {
+  padding: 0;
+  text-align: left;
+}
+
+.teamfinder-stack.is-request-cards {
+  gap: var(--tf-request-card-gap);
+}
+
+.teamfinder-stack.is-request-cards > .teamfinder-row,
+.teamfinder-stack.is-request-cards > .teamfinder-row:first-child,
+.teamfinder-stack.is-request-cards > .teamfinder-row:last-child {
+  position: static;
+  align-items: center;
+  gap: var(--tf-request-copy-gap);
+  padding: var(--tf-request-card-pad);
+  border: var(--tf-card-border) solid var(--tf-c-stroke);
+  border-radius: var(--tf-radius-card);
+  background: var(--tf-c-surface);
+}
+
+/* Card interior: one copy column that takes the slack, actions pinned right
+   and centred against it. */
+.teamfinder-stack.is-request-cards > .teamfinder-row .teamfinder-row-main {
+  gap: 0;
+}
+
+.teamfinder-stack.is-request-cards > .teamfinder-row .teamfinder-row-copy {
+  gap: 4px;
+  max-width: none;
+}
+
+.teamfinder-stack.is-request-cards > .teamfinder-row .teamfinder-row-actions {
+  align-self: center;
+  flex-wrap: nowrap;
+  gap: var(--tf-request-action-gap);
+}
+
+.teamfinder-stack.is-request-cards > .teamfinder-row.is-interactive {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.teamfinder-stack.is-request-cards > .teamfinder-row.is-interactive:hover,
+.teamfinder-stack.is-request-cards > .teamfinder-row.is-interactive:focus-visible {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-subtle);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+.teamfinder-stack.is-request-cards > .teamfinder-row.is-interactive:focus-visible {
+  outline: 2px solid rgba(82, 82, 91, 0.2);
+  outline-offset: 2px;
+}
+
+.teamfinder-page-content .teamfinder-stack:not(.is-request-cards) {
+  gap: 0;
+}
+
+.teamfinder-page-content .teamfinder-stack:not(.is-request-cards) > .teamfinder-row,
+.teamfinder-page-content .teamfinder-stack:not(.is-request-cards) > .teamfinder-row:first-child,
+.teamfinder-page-content .teamfinder-stack:not(.is-request-cards) > .teamfinder-row:last-child {
+  position: static;
+  padding: 16px 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--tf-c-divider);
+}
+
+.teamfinder-page-content .teamfinder-stack:not(.is-request-cards) > .teamfinder-row:last-child {
+  border-bottom: 0;
+}
+
+.teamfinder-sidebar {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-rail-title-gap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.teamfinder-sidebar-intro {
+  display: grid;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.teamfinder-sidebar-intro h2 {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-el-heading-size);
+  font-weight: var(--tf-el-heading-weight);
+  letter-spacing: 0;
+  line-height: 21px;
+  text-wrap: balance;
+}
+
+.teamfinder-sidebar-intro p {
+  margin: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-railcopy-size);
+  font-weight: var(--tf-el-railcopy-weight);
+  line-height: 20px;
+  text-wrap: pretty;
+}
+
+.teamfinder-sidebar-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.teamfinder-sidebar-actions[hidden] {
+  display: none !important;
+}
+
+.teamfinder-sidebar-actions .button {
+  width: 100%;
+  justify-content: center;
+}
+
+.teamfinder-help-button {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 40;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--tf-c-stroke);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--tf-c-text-primary);
+  font: inherit;
+  font-size: 18px;
+  font-weight: var(--tf-weight-medium);
+  line-height: 1;
+  box-shadow: 0 8px 24px rgba(24, 24, 27, 0.12);
+  cursor: pointer;
+}
+
+.teamfinder-help-button:hover {
+  background: var(--tf-c-surface-subtle);
+  border-color: var(--tf-c-stroke-strong);
+}
+
+.teamfinder-help-dialog {
+  width: min(480px, calc(100vw - 48px));
+}
+
+.teamfinder-help-body {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+
+.teamfinder-help-body > p {
+  margin: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-ui);
+  line-height: 1.5;
+}
+
+.teamfinder-help-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 10px;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-ui);
+  line-height: 1.5;
+}
+
+.teamfinder-help-steps li::marker {
+  color: var(--tf-c-text-tertiary);
+}
+
+.teamfinder-sidebar[hidden] {
+  display: none !important;
+}
+
+.teamfinder-search-wrap[hidden] {
+  display: none !important;
+}
+
+.teamfinder-filter-groups {
+  display: grid;
+  gap: var(--tf-rail-group-gap);
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.teamfinder-filter-groups[hidden] {
+  display: none !important;
+}
+
+.teamfinder-clear-filters {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--tf-c-stroke);
+  background: transparent;
+  color: var(--tf-c-text-tertiary);
+  font: inherit;
+  font-size: var(--tf-text-label);
+  font-weight: var(--tf-weight-medium);
+  text-align: left;
+  cursor: pointer;
+}
+
+.teamfinder-clear-filters:hover {
+  color: var(--tf-c-text-primary);
+  border-bottom-color: var(--tf-c-stroke-strong);
+}
+
+.teamfinder-clear-filters[hidden] {
+  display: none !important;
+}
+
+.teamfinder-panel-card {
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.teamfinder-search-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  width: 220px;
+  max-width: min(220px, 42vw);
+  height: auto;
+  z-index: 5;
+  box-sizing: border-box;
+  align-self: center;
+  margin: 0;
+  padding: 0 0 10px;
+}
+
+.teamfinder-search-shell {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  box-sizing: border-box;
+}
+
+.teamfinder-search-wrap.is-open .teamfinder-search-shell {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  height: 20px;
+  z-index: 20;
+}
+
+.teamfinder-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.teamfinder-search-wrap.is-open .teamfinder-search {
+  border-color: transparent;
+}
+
+.teamfinder-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.teamfinder-search-track {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 0 0 0 22px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  box-sizing: border-box;
+}
+
+.teamfinder-search-track::-webkit-scrollbar {
+  display: none;
+}
+
+.teamfinder-search-chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 0 6px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-check);
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-chip);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.teamfinder-search-chip[hidden] {
+  display: none !important;
+}
+
+.teamfinder-search input {
+  flex: 0 0 auto;
+  width: 72px;
+  min-width: 72px;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tf-c-text-primary);
+  font: inherit;
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  outline: 0;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.teamfinder-search input::-webkit-search-decoration,
+.teamfinder-search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.teamfinder-search input::placeholder {
+  color: var(--tf-c-text-tertiary);
+}
+
+.teamfinder-search input:focus {
+  outline: 0;
+}
+
+.teamfinder-search-popup {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  left: auto;
+  width: 320px;
+  max-width: min(320px, calc(100vw - 96px));
+  z-index: 21;
+  display: grid;
+  gap: 1px;
+  padding: 4px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-chip);
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.teamfinder-search-popup[hidden] {
+  display: none !important;
+}
+
+.teamfinder-search-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: var(--tf-radius-check);
+  background: transparent;
+  color: var(--tf-c-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.teamfinder-search-option:hover,
+.teamfinder-search-option.is-active {
+  background: var(--tf-c-surface-sunken);
+}
+
+.teamfinder-search-option-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 18px;
+  padding: 0 6px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-check);
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-chip);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.teamfinder-search-option.is-active .teamfinder-search-option-pill {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-hover);
+  color: var(--tf-c-text-primary);
+}
+
+.teamfinder-search-option-desc {
+  flex: 1;
+  min-width: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-chip);
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: right;
+}
+
+.teamfinder-search-option-value {
+  flex: 1;
+  min-width: 0;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-label);
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.teamfinder-filter-group {
+  display: grid;
+  gap: var(--tf-rail-option-gap);
+}
+
+.teamfinder-filter-group[hidden] {
+  display: none;
+}
+
+/* The group label sits a step darker than its own options, so the rail
+   reads as headings over items rather than one flat column of gray. */
+.teamfinder-filter-group h2 {
+  margin: 0 0 4px;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-el-filter-label-size);
+  font-weight: var(--tf-el-filter-label-weight);
+  letter-spacing: 0;
+  line-height: 20px;
+}
+
+.teamfinder-filter-group label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-filter-option-size);
+  font-weight: var(--tf-el-filter-option-weight);
+  line-height: 20px;
+  cursor: pointer;
+}
+
+/* Drawn rather than native: the design's unchecked box is a 16px hairline
+   square, which `accent-color` cannot produce — it only colors the checked
+   fill and leaves the platform's own resting box behind. */
+.teamfinder-filter-group input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1px solid var(--tf-c-stroke);
+  border-radius: var(--tf-radius-check);
+  background: var(--tf-c-surface);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.teamfinder-filter-group label:hover input[type="checkbox"] {
+  border-color: var(--tf-c-stroke-strong);
+}
+
+.teamfinder-filter-group input[type="checkbox"]:checked {
+  border-color: var(--tf-c-action);
+  background: var(--tf-c-action);
+}
+
+/* The tick is a rotated two-sided box rather than an asset, matching how the
+   rest of this stylesheet draws its marks. */
+.teamfinder-filter-group input[type="checkbox"]::after {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 8px;
+  border: solid var(--tf-c-text-on-action);
+  border-width: 0 2px 2px 0;
+  opacity: 0;
+  /* The rotation pivots on the box centre, which leaves the tick reading
+     one pixel low; the translate pays that back optically. */
+  transform: translateY(-1px) rotate(45deg);
+}
+
+.teamfinder-filter-group input[type="checkbox"]:checked::after {
+  opacity: 1;
+}
+
+.teamfinder-filter-group label:has(input:checked) {
+  color: var(--tf-c-text-secondary);
+}
+
+.teamfinder-main {
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+}
+
+.teamfinder-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--tf-c-divider);
+  background: #fff;
+  /* Negative margin + matching padding: the hairline reaches the window edge
+     while the tabs and search stay on the page gutter. */
+  margin-inline: calc(var(--page-pad-x) * -1);
+  padding-inline: var(--page-pad-x);
+}
+
+.teamfinder-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: var(--tf-tab-gap);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  /* This is a scroll container, so anything left of its content origin is
+     unreachable: without this the first tab's underline overhang gets clipped
+     and only that tab looks short on one side. The padding gives the overhang
+     room; the negative margin cancels it so the labels stay on the gutter. */
+  padding-inline: 6px;
+  margin-inline: -6px;
+  border-bottom: 0;
+  background: transparent;
+  scrollbar-width: none;
+}
+
+.teamfinder-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.teamfinder-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0 2px 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tf-c-text-primary);
+  font: inherit;
+  font-size: var(--tf-el-tab-size);
+  font-weight: var(--tf-el-tab-weight);
+  letter-spacing: 0;
+  line-height: 19px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.teamfinder-tab::after {
+  content: "";
+  position: absolute;
+  /* Runs 6px past the label on each side so the active marker reads as a
+     deliberate bar rather than a text underline. */
+  left: -6px;
+  right: -6px;
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+}
+
+/* Every tab carries the same weight and color; only the rule underneath
+   moves. Hover tints the rule instead of the label, so the strip never
+   reflows and the resting row stays as even as the design draws it. */
+.teamfinder-tab:hover {
+  color: var(--tf-c-text-primary);
+  background: transparent;
+}
+
+.teamfinder-tab:hover::after {
+  background: var(--tf-c-stroke);
+}
+
+/* Same weight as an idle tab — only the rule underneath moves, so the strip
+   cannot reflow when you switch tabs. */
+.teamfinder-tab.is-active {
+  color: var(--tf-c-text-primary);
+  font-weight: var(--tf-el-tab-weight);
+  background: transparent;
+}
+
+.teamfinder-tab.is-active::after,
+.teamfinder-tab.is-active:hover::after {
+  background: var(--tf-c-text-primary);
+}
+
+.teamfinder-panel-shell {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.teamfinder-panel-card {
+  flex: 1;
+  min-height: 0;
+  padding: 0 0 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.teamfinder-panel-card::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.teamfinder-scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translate(-50%, 0);
+  cursor: pointer;
+}
+
+.teamfinder-scroll-hint[hidden] {
+  display: none !important;
+}
+
+.teamfinder-scroll-hint-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--tf-c-surface-hover);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.teamfinder-scroll-hint:hover .teamfinder-scroll-hint-circle {
+  border-color: var(--tf-c-stroke-strong);
+}
+
+.teamfinder-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.teamfinder-panel[hidden] {
+  display: none !important;
+}
+
+.teamfinder-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tf-grid-gap);
+}
+
+.teamfinder-card-grid.is-compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.teamfinder-card > .teamfinder-tags {
+  margin-top: 12px;
+}
+
+.teamfinder-load-more {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* Stroke, radius, fill and type all come from the scoped button base; this
+   only sets the one thing that is particular to a load-more control. */
+.teamfinder-load-more .button {
+  min-width: 140px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   The card is one component, not three.
+
+   A hacker, a team and a request are the same object in this design: a title
+   with a subtitle under it, a paragraph, and an action pair pinned bottom
+   right. They had diverged in the code — hackers carried "Project Type:" /
+   "Skills:" meta rows, teams carried an avatar and a chip row, requests were
+   a separate row element — which is why the tabs never quite lined up.
+   Everything below is shared; each tab only chooses what fills the slots.
+
+   The edge is the divider weight, not the control stroke: on the #fafafa
+   ground the white fill already does the separating, so the border only has
+   to define. At the heavier stroke the grid read as a wire mesh.
+   ───────────────────────────────────────────────────────────────────────── */
+.teamfinder-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  padding: var(--tf-card-pad);
+  border: var(--tf-card-border) solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-card);
+  background: var(--tf-c-surface);
+}
+
+/* Title and subtitle are one block: the subtitle is an attribute of the name
+   ("3rd Year Software Engineering @ MIT", "3/4 members"), so it sits tight
+   under it and the gap to the paragraph is what separates the two. */
+/* Scoped past `.teamfinder-card-heading > p` further down, which is more
+   specific and was silently giving the subtitle the bio's styling — right
+   size by luck, but the wrong colour, and wrapping where it should clip. */
+.teamfinder-card-heading > p.teamfinder-card-subtitle {
+  margin: 0;
+  min-width: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-card-sub-size);
+  font-weight: var(--tf-el-card-sub-weight);
+  line-height: var(--tf-el-card-sub-leading);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teamfinder-card.is-interactive {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.teamfinder-card.is-interactive:hover,
+.teamfinder-card.is-interactive:focus-visible {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-subtle);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.06);
+  outline: none;
+}
+
+.teamfinder-card.is-interactive:focus-visible {
+  outline: 2px solid var(--tf-c-focus);
+  outline-offset: 2px;
+}
+
+.teamfinder-card-top {
+  display: grid;
+  gap: var(--tf-card-gap);
+  min-width: 0;
+}
+
+.teamfinder-card-intro {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.teamfinder-card-heading {
+  min-width: 0;
+  display: grid;
+  gap: 0;
+  justify-items: stretch;
+}
+
+.teamfinder-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.teamfinder-card-name-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  height: fit-content;
+  align-self: center;
+}
+
+.teamfinder-card-name-block-team {
+  align-items: center;
+  gap: 10px;
+}
+
+.teamfinder-card-team-copy {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+}
+
+.teamfinder-card-team-copy h3 {
+  margin: 0;
+}
+
+.teamfinder-card-name-block-team .teamfinder-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tf-radius-card);
+  font-size: var(--tf-text-label);
+}
+
+.teamfinder-card-title-row h3,
+.teamfinder-card-name-block h3 {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.teamfinder-card-heading h3 {
+  margin: 0;
+  color: var(--tf-c-text-name);
+  font-size: var(--tf-el-card-name-size);
+  font-weight: var(--tf-el-card-name-weight);
+  letter-spacing: 0;
+  line-height: var(--tf-el-card-name-leading);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.teamfinder-card-heading > p {
+  margin: 0;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-el-card-bio-size);
+  font-weight: var(--tf-el-card-bio-weight);
+  line-height: var(--tf-el-card-bio-leading);
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+}
+
+.teamfinder-card-team {
+  flex: 0 1 auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-card);
+  font-weight: var(--tf-weight-medium);
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teamfinder-card-body {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin-top: var(--tf-card-body-gap);
+  justify-items: start;
+}
+
+/* Filled, unstroked: at two cards a row the chip only has to separate
+   itself from the card face, and a border at this size reads as noise. */
+.teamfinder-type-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  box-sizing: border-box;
+  max-width: 42%;
+  height: 21px;
+  margin: 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--tf-radius-chip);
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-el-card-chip-size);
+  font-weight: var(--tf-el-card-chip-weight);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.teamfinder-card-desc,
+.teamfinder-card-bio {
+  margin: 0;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-el-card-bio-size);
+  font-weight: var(--tf-el-card-bio-weight);
+  line-height: var(--tf-el-card-bio-leading);
+  text-wrap: pretty;
+  display: -webkit-box;
+  /* Three lines, per the design. At two the bio cut mid-thought on most
+     hackers; the meta rows that used to follow it are gone now, so the card
+     can spend that height on the sentence that actually differentiates one
+     person from another. */
+  -webkit-line-clamp: var(--tf-card-bio-lines);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.teamfinder-card-meta {
+  display: grid;
+  gap: var(--tf-card-meta-gap);
+  min-width: 0;
+  margin-top: 0;
+}
+
+.teamfinder-card-meta p {
+  margin: 0;
+  min-width: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-card-meta-size);
+  font-weight: var(--tf-el-card-meta-weight);
+  line-height: var(--tf-el-card-meta-leading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The label is set bold on the same color rather than a darker gray: it is
+   already doing the separating, and a second gray here would add a step the
+   ramp does not need. */
+.teamfinder-card-meta .teamfinder-meta-label {
+  display: inline;
+  margin: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: var(--tf-el-card-meta-label-weight);
+}
+
+/* `margin-top: auto` pins the action to the bottom of the card rather than
+   letting it float up under short content, so every button in a row lands on
+   the same line no matter how long each description runs. */
+/* Right-aligned pair, not a full-width button. The design puts the quiet
+   escape ("View profile") beside the commit ("Request") at the bottom right
+   of the card, which keeps the commit the same size on every card and lets
+   the two read as a hierarchy. A full-bleed navy button repeated six times
+   down the grid was the loudest thing on the page.
+
+   `margin-top: auto` pins the row to the bottom so every button in a grid
+   row lands on the same line no matter how long each description runs. */
+.teamfinder-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--tf-card-action-pair-gap);
+  margin-top: auto;
+  padding-top: var(--tf-card-action-gap);
+}
+
+.teamfinder-card-actions .text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 0 4px;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-card-btn-size);
+  font-weight: 500;
+}
+
+.teamfinder-card-actions .text-button:hover {
+  color: var(--tf-c-text-tertiary);
+  background: transparent;
+}
+
+.teamfinder-card-actions .teamfinder-request-button,
+.teamfinder-card-actions .teamfinder-full-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: var(--tf-card-action-min-width);
+  min-height: 40px;
+  padding: var(--tf-el-card-btn-pad-y) var(--tf-el-card-btn-pad-x);
+  border-width: var(--tf-el-card-btn-border);
+  border-color: var(--tf-c-stroke);
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-el-card-btn-size);
+  font-weight: var(--tf-el-card-btn-weight);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.teamfinder-card-actions .teamfinder-full-badge {
+  cursor: default;
+}
+
+.teamfinder-card-actions .teamfinder-request-button:hover:not(:disabled):not(.is-requested) {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-hover);
+}
+
+.teamfinder-card-actions .teamfinder-request-button.is-requested,
+.teamfinder-card-actions .teamfinder-request-button:disabled {
+  color: var(--tf-c-text-tertiary);
+  background: #fff;
+  cursor: default;
+}
+
+.teamfinder-full-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-control);
+  background: var(--tf-c-surface);
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-card);
+  font-weight: var(--tf-weight-medium);
+  line-height: 1;
+}
+
+.teamfinder-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.teamfinder-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: var(--tf-card-pad);
+  border-bottom: 1px solid var(--tf-c-divider);
+}
+
+.teamfinder-stack > .teamfinder-row:first-child {
+  border-top: 1px solid var(--tf-c-divider);
+}
+
+.teamfinder-row.has-note {
+  align-items: flex-start;
+}
+
+.teamfinder-row.has-note .teamfinder-row-actions {
+  align-self: center;
+}
+
+.teamfinder-row:last-child {
+  border-bottom: 0;
+}
+
+.teamfinder-row-main {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.teamfinder-avatar {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: var(--tf-radius-card);
+  background: var(--tf-c-surface-sunken);
+  background-size: cover;
+  background-position: center;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-body);
+  font-weight: var(--tf-weight-medium);
+}
+
+.teamfinder-avatar.has-image {
+  color: transparent;
+  font-size: 0;
+}
+
+.teamfinder-row-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  max-width: 690px;
+  width: 100%;
+}
+
+.teamfinder-row-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.teamfinder-row-title-team {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.teamfinder-row-copy h3,
+.teamfinder-row-title h3 {
+  margin: 0;
+  color: var(--tf-c-text-name);
+  font-size: var(--tf-el-row-title-size);
+  font-weight: var(--tf-el-row-title-weight);
+  letter-spacing: 0;
+  line-height: 21px;
+}
+
+.teamfinder-row-copy p {
+  margin: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-row-copy-size);
+  font-weight: var(--tf-el-row-copy-weight);
+  line-height: 20px;
+}
+
+.teamfinder-request-note {
+  margin: 0 !important;
+  max-width: 100%;
+  color: var(--tf-c-text-tertiary) !important;
+  font-size: var(--tf-el-card-meta-size) !important;
+  font-weight: var(--tf-el-card-meta-weight);
+  font-style: normal;
+  line-height: var(--tf-el-card-meta-leading) !important;
+  text-wrap: pretty;
+}
+
+.teamfinder-request-note .teamfinder-meta-label {
+  display: inline;
+  margin: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: var(--tf-el-card-meta-label-weight);
+}
+
+.teamfinder-about {
+  margin-top: 6px !important;
+  color: var(--tf-c-text-secondary) !important;
+}
+
+.teamfinder-muted {
+  color: var(--tf-c-text-tertiary);
+  font-weight: 500;
+}
+
+.teamfinder-tags {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow: hidden;
+}
+
+/* Same chip object as detail tags — readable 12px on the sunken fill */
+.teamfinder-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--tf-radius-chip);
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-secondary);
+  font-size: 12px;
+  font-weight: var(--tf-weight-medium);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.teamfinder-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-self: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.teamfinder-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: var(--tf-radius-chip);
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-label);
+  font-weight: var(--tf-weight-medium);
+}
+
+.teamfinder-empty {
+  margin: 0;
+  padding: 28px 12px;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-ui);
+  font-weight: var(--tf-weight-medium);
+  text-align: center;
+}
+
+.teamfinder-subsection {
+  padding: 0;
+}
+
+.teamfinder-subsection + .teamfinder-subsection {
+  margin-top: 20px;
+}
+
+.teamfinder-subsection > h3 {
+  margin: 0 0 10px;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-label);
+  font-weight: var(--tf-weight-medium);
+}
+
+.teamfinder-subsection .teamfinder-stack {
+  gap: 0;
+}
+
+.teamfinder-subsection .teamfinder-empty {
+  padding: 12px 0;
+  text-align: left;
+}
+
+.teamfinder-row-actions .text-button {
+  color: var(--tf-c-text-tertiary);
+}
+
+.teamfinder-row-actions .text-button:hover {
+  color: var(--tf-c-text-tertiary);
+  background: transparent;
+}
+
+.teamfinder-request-status {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Sent, not dead: an outgoing request is still live and may yet be accepted,
+   so it holds the soft accent and a navy label — the same object as a card's
+   "Requested". Only "Declined" below drops out to neutral, because that one
+   really is over. Previously both were gray and the two outcomes looked the
+   same at a glance. */
+.teamfinder-request-status.is-requested,
+.teamfinder-request-status.is-requested:disabled {
+  border-color: var(--tf-c-action-soft-line);
+  background: var(--tf-c-action-soft);
+  color: var(--tf-c-action-text);
+  opacity: 1;
+}
+
+.teamfinder-request-status.is-declined,
+.teamfinder-request-status.is-declined:disabled {
+  border-color: var(--tf-c-divider);
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-tertiary);
+}
+
+.teamfinder-request-status.is-declined:disabled {
+  opacity: 1;
+}
+
+.teamfinder-manage-section-body {
+  min-width: 0;
+}
+
+.teamfinder-manage-panel {
+  min-width: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+/* The team's own profile is an object on the page, not a region of it, so it
+   sits on a card like every other object in this system. Visibility and
+   Danger stay bare: those are settings rows, and boxing them would imply
+   they are things rather than switches. */
+.teamfinder-manage-panel.is-profile-card {
+  display: grid;
+  gap: 16px;
+  padding: var(--tf-card-pad);
+  border: var(--tf-card-border) solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-card);
+  background: var(--tf-c-surface);
+}
+
+/* Project Interests / Skills sit side by side as labelled chip groups, the
+   same pairing the profile dialog uses. They were two "Label: a, b, c" text
+   rows, which made a team's tags read as prose instead of as the same
+   selectable things they are everywhere else in the product. */
+.teamfinder-manage-taggroups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px 40px;
+  min-width: 0;
+}
+
+.teamfinder-manage-taggroup {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  align-content: start;
+}
+
+.teamfinder-manage-taggroup > h4 {
+  margin: 0;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.teamfinder-manage-panel.is-flush {
+  padding: 0;
+}
+
+.teamfinder-manage-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.teamfinder-manage-toolbar-actions.is-edit-footer {
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.teamfinder-manage-panel.is-editing {
+  display: grid;
+  gap: 24px;
+}
+
+.teamfinder-manage-panel.is-editing .teamfinder-manage-field {
+  margin: 0;
+  gap: 6px;
+}
+
+.teamfinder-manage-panel.is-editing .teamfinder-manage-field .teamfinder-meta-label {
+  color: var(--tf-c-soft);
+  font-size: var(--tf-text-ui);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.teamfinder-manage-field-hint {
+  margin: 0;
+  color: var(--tf-c-hint);
+  font-size: var(--tf-text-label);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.teamfinder-manage-panel.is-editing .teamfinder-manage-meta-row {
+  margin: 0;
+}
+
+.teamfinder-manage-photo-section {
+  display: grid;
+  gap: 14px;
+}
+
+.teamfinder-manage-photo-copy h4 {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-section);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.teamfinder-manage-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.teamfinder-manage-photo-actions {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.teamfinder-manage-photo-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.teamfinder-manage-photo-note {
+  margin: 0;
+  color: var(--tf-c-hint);
+  font-size: var(--tf-text-label);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.teamfinder-manage-avatar,
+.teamfinder-manage-avatar-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.teamfinder-manage-avatar-btn {
+  cursor: pointer;
+}
+
+.teamfinder-manage-avatar .teamfinder-avatar,
+.teamfinder-manage-avatar-btn .teamfinder-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--tf-radius-card);
+  font-size: var(--tf-text-name);
+}
+
+.teamfinder-manage-avatar.is-photo .teamfinder-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--tf-radius-card);
+  font-size: var(--tf-text-subject);
+}
+
+.teamfinder-manage-avatar-hint {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  transform: translateX(-50%);
+  padding: 2px 7px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-chip);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.teamfinder-manage-identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+.teamfinder-manage-identity-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.teamfinder-manage-identity-copy {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+  flex: 1;
+}
+
+.teamfinder-manage-identity-copy .teamfinder-manage-field {
+  margin-bottom: 4px;
+}
+
+.teamfinder-manage-title {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-subject);
+  font-weight: var(--tf-weight-strong);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.teamfinder-manage-bio {
+  margin: 0 0 10px !important;
+  font-size: var(--tf-text-manage-body) !important;
+  line-height: 1.5 !important;
+}
+
+.teamfinder-manage-bio .teamfinder-meta-label {
+  display: inline;
+  margin: 0;
+  color: var(--tf-c-label);
+  font-size: inherit;
+  font-weight: var(--tf-weight-medium);
+}
+
+.teamfinder-manage-meta-row {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.teamfinder-manage-meta-row > p {
+  margin: 0;
+  color: var(--tf-c-body);
+  font-size: var(--tf-text-manage-body);
+  font-weight: 500;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.teamfinder-manage-meta-row .teamfinder-meta-label {
+  display: inline;
+  margin: 0;
+  color: var(--tf-c-label);
+  font-size: inherit;
+  font-weight: 500;
+}
+
+.teamfinder-manage-meta-row.is-editing {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+.teamfinder-manage-meta-row.is-editing .teamfinder-manage-field {
+  margin-bottom: 0;
+}
+
+.teamfinder-manage-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  margin: 0 0 10px;
+}
+
+.teamfinder-manage-field .teamfinder-meta-label {
+  display: block;
+  margin: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-label);
+  font-weight: var(--tf-weight-medium);
+  letter-spacing: 0;
+}
+
+.teamfinder-manage-field input,
+.teamfinder-manage-field textarea {
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-control);
+  background: #fff;
+  color: var(--tf-c-text-primary);
+  font: inherit;
+  font-size: var(--tf-text-body);
+  line-height: 1.4;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.teamfinder-manage-field #tf-manage-name {
+  max-width: 600px;
+}
+
+.teamfinder-manage-field #tf-manage-description {
+  font-size: var(--tf-text-manage-body);
+  line-height: 1.5;
+  min-height: 88px;
+  max-width: 600px;
+  resize: none;
+}
+
+.teamfinder-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.teamfinder-option-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-chip);
+  background: #fff;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-label);
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.teamfinder-option-chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.teamfinder-option-chip:hover {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-subtle);
+}
+
+.teamfinder-option-chip.is-selected {
+  border-color: var(--tf-c-action-soft-line);
+  background: var(--tf-c-action-soft);
+  color: var(--tf-c-action-text);
+}
+
+.teamfinder-option-chip:focus-within {
+  outline: 2px solid rgba(82, 82, 91, 0.18);
+  outline-offset: 1px;
+}
+
+.teamfinder-manage-field input:focus,
+.teamfinder-manage-field textarea:focus {
+  outline: 2px solid rgba(82, 82, 91, 0.18);
+  outline-offset: 1px;
+  border-color: var(--tf-c-stroke-strong);
+}
+
+.teamfinder-switch-list {
+  display: grid;
+  gap: 0;
+  margin-top: 0;
+  border-top: 0;
+}
+
+.teamfinder-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 0;
+}
+
+.teamfinder-switch-row:first-child {
+  padding-top: 0;
+}
+
+.teamfinder-switch-row:last-child {
+  padding-bottom: 0;
+}
+
+.teamfinder-switch-copy {
+  min-width: 0;
+}
+
+.teamfinder-switch-label {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-ui);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.teamfinder-switch-desc {
+  margin: 2px 0 0;
+  color: var(--tf-c-hint);
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.teamfinder-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tf-c-divider);
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.teamfinder-switch.is-on {
+  background: var(--tf-c-text-secondary);
+}
+
+.teamfinder-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.18);
+  transition: transform 160ms ease;
+}
+
+.teamfinder-switch.is-on .teamfinder-switch-thumb {
+  transform: translateX(14px);
+}
+
+.teamfinder-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.teamfinder-meta-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--tf-c-label);
+  font-size: var(--tf-text-label);
+  font-weight: 500;
+}
+
+.teamfinder-meta-grid p {
+  margin: 0;
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-body);
+}
+
+.teamfinder-manage-panel .teamfinder-switch-row + .teamfinder-switch-row {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 8px;
+}
+
+.teamfinder-danger-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+}
+
+.teamfinder-danger-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.teamfinder-danger-title {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-ui);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.teamfinder-danger-desc {
+  margin: 0;
+  color: var(--tf-c-body);
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+/* Keeps the deliberately gentle pastel fill, but the label was white at
+   2.1:1 — unreadable on a destructive control. Dark red ink instead. */
+/* Tinted face, red label — the danger counterpart of the soft accent. A
+   filled red button would be the loudest thing on a settings page for an
+   action most people will never take. */
+.teamfinder-danger-button {
+  flex: 0 0 auto;
+  border: 0;
+  background: var(--tf-c-danger-soft);
+  color: var(--tf-c-danger-soft-text);
+  font-weight: var(--tf-weight-medium);
+}
+
+.teamfinder-danger-button:hover:not(:disabled) {
+  background: var(--tf-c-danger-soft-hover);
+  color: var(--tf-c-danger-soft-text);
+}
+
+.teamfinder-danger-button:hover {
+  background: var(--tf-c-danger-fill-hover);
+  color: var(--tf-c-danger-ink);
+}
+
+.teamfinder-members-table {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.teamfinder-members-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-card);
+  background: #fff;
+}
+
+.teamfinder-members-row.is-interactive {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.teamfinder-members-row.is-interactive:hover,
+.teamfinder-members-row.is-interactive:focus-visible {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-subtle);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.06);
+  outline: none;
+}
+
+.teamfinder-members-row.is-interactive:focus-visible {
+  outline: 2px solid rgba(82, 82, 91, 0.2);
+  outline-offset: 2px;
+}
+
+.teamfinder-members-row-end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.teamfinder-members-person {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.teamfinder-members-name {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-ui);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.teamfinder-members-email {
+  margin: 0;
+  min-width: 0;
+  color: var(--tf-c-soft);
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teamfinder-members-status {
+  min-width: 0;
+}
+
+.teamfinder-members-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-chip);
+  font-weight: 500;
+}
+
+/* Admin is the one role worth pointing at, so it takes the soft accent while
+   plain members stay neutral. It was green — the only green in the product,
+   and a hue that reads as "success" rather than "permission". */
+.teamfinder-members-badge.is-admin {
+  background: var(--tf-c-action-soft);
+  color: var(--tf-c-action-text);
+  font-weight: var(--tf-weight-medium);
+}
+
+.teamfinder-members-table .teamfinder-empty {
+  padding: 12px 0;
+  text-align: left;
+}
+
+.teamfinder-member-menu {
+  position: relative;
+  z-index: 2;
+  justify-self: end;
+}
+
+.teamfinder-members-row:has(.teamfinder-member-menu-pop:not([hidden])) {
+  position: relative;
+  z-index: 5;
+}
+
+.teamfinder-member-menu:has(.teamfinder-member-menu-pop:not([hidden])) {
+  z-index: 6;
+}
+
+.teamfinder-member-menu-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--tf-radius-chip);
+  background: transparent;
+  color: var(--tf-c-text-tertiary);
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.teamfinder-member-menu-btn:hover {
+  background: var(--tf-c-surface-sunken);
+  color: var(--tf-c-text-primary);
+}
+
+.teamfinder-member-menu-pop {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 6px);
+  z-index: 12;
+  display: grid;
+  min-width: 168px;
+  padding: 4px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-card);
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.teamfinder-member-menu-pop[hidden] {
+  display: none !important;
+}
+
+.teamfinder-member-menu-pop button {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--tf-radius-chip);
+  background: transparent;
+  color: var(--tf-c-text-primary);
+  font: inherit;
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.teamfinder-member-menu-pop button:hover {
+  background: var(--tf-c-surface-sunken);
+}
+
+.teamfinder-member-menu-pop button[data-action="remove-member"] {
+  color: var(--tf-c-danger);
+}
+
+
+.teamfinder-note-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(540px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  height: fit-content;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  border-radius: var(--tf-radius-card);
+  color: var(--tf-c-text-primary);
+  background: #fff;
+  box-shadow: 0 20px 56px rgba(24, 24, 27, 0.2);
+}
+
+.teamfinder-confirm-dialog {
+  width: min(440px, calc(100vw - 48px));
+}
+
+/* No field between copy and buttons here, so subtract the copy's own bottom
+   margin to land on the same content -> actions gap as the other modals. */
+.teamfinder-confirm-dialog .dialog-actions {
+  margin-top: calc(var(--tf-modal-actions-gap) - var(--tf-modal-block-gap));
+}
+
+.teamfinder-note-dialog::backdrop {
+  background: rgba(24, 24, 27, 0.46);
+  backdrop-filter: blur(3px);
+}
+
+.teamfinder-note-dialog form {
+  padding: var(--tf-modal-pad-top) var(--tf-modal-pad-x) var(--tf-modal-pad-bottom);
+}
+
+.teamfinder-note-dialog .dialog-header {
+  align-items: center;
+  margin-bottom: var(--tf-modal-title-gap);
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.teamfinder-note-dialog .dialog-header h2 {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-section);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+/* The close button carries 8px of its own padding around a 16px icon. Pull the
+   hit target out by that much so the glyph — not the invisible box — lines up
+   with the modal's padding edge and the title on the opposite side. */
+.teamfinder-note-dialog .close-button {
+  flex: 0 0 auto;
+  margin-top: 0;
+  margin-right: calc(var(--tf-modal-close-inset) * -1);
+}
+
+.teamfinder-note-copy {
+  margin: 0 0 var(--tf-modal-block-gap);
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-body, 14px);
+  font-weight: 500;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.teamfinder-note-copy strong {
+  color: var(--tf-c-text-primary);
+  font-weight: 600;
+}
+
+.teamfinder-note-field {
+  display: block;
+  margin: 0;
+}
+
+/* Single-line and multi-line controls in these modals shared no styling: the
+   textarea sat at 8px/10px, while the pin input inherited .field's 8px/16px.
+   One inset for both. */
+.teamfinder-note-field input,
+.teamfinder-note-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--tf-c-stroke);
+  border-radius: var(--tf-radius-control);
+  background: #fff;
+  color: var(--tf-c-text-primary);
+  font: inherit;
+  font-size: var(--tf-text-manage-body);
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.teamfinder-note-field input {
+  min-height: 46px;
+}
+
+.teamfinder-note-field textarea {
+  min-height: 88px;
+  resize: none;
+}
+
+.teamfinder-note-field input:focus,
+.teamfinder-note-field textarea:focus {
+  outline: 2px solid rgba(82, 82, 91, 0.18);
+  outline-offset: 1px;
+  border-color: var(--tf-c-stroke-strong);
+}
+
+.teamfinder-note-field input::placeholder,
+.teamfinder-note-field textarea::placeholder {
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-manage-body);
+}
+
+.teamfinder-note-actions {
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: var(--tf-modal-actions-gap);
+  padding-top: 0;
+  border-top: 0;
+}
+
+.teamfinder-profile-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  /* This modal carries far more per screen than the note/confirm dialogs, so it
+     gets its own, larger inset rather than the shared default. */
+  --tf-modal-pad-x: 40px;
+  --tf-modal-pad-top: 34px;
+  --tf-modal-pad-bottom: 40px;
+  width: min(860px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  height: fit-content;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  border-radius: var(--tf-radius-card);
+  color: var(--tf-c-text-primary);
+  background: #fff;
+  box-shadow: 0 20px 56px rgba(24, 24, 27, 0.2);
+}
+
+.teamfinder-profile-dialog::backdrop {
+  background: rgba(24, 24, 27, 0.46);
+  backdrop-filter: blur(3px);
+}
+
+.teamfinder-profile-shell {
+  position: relative;
+  padding: var(--tf-modal-pad-top) var(--tf-modal-pad-x) var(--tf-modal-pad-bottom);
+}
+
+/* Close sits on the padding edge (offset by its own icon padding so the glyph,
+   not the hit area, lines up); Request hangs beneath it, right-aligned to the
+   same edge. */
+.teamfinder-profile-chrome {
+  position: absolute;
+  top: calc(var(--tf-modal-pad-top) - var(--tf-modal-close-inset));
+  right: calc(var(--tf-modal-pad-x) - var(--tf-modal-close-inset));
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.teamfinder-profile-close {
+  position: static;
+}
+
+/* Nudged in by the close button's icon padding so the two right edges align
+   optically rather than mathematically. Scoped to the chrome, because the
+   hacker modal moves this same button into the left rail. */
+.teamfinder-profile-chrome .teamfinder-profile-request {
+  margin-right: var(--tf-modal-close-inset);
+}
+
+.teamfinder-profile-request[hidden] {
+  display: none !important;
+}
+
+/* Only the identity row runs alongside the close button. Reserving the gutter
+   on the whole body indented every line of the bio and meta lists, leaving the
+   text block visibly off-centre in the modal. */
+.teamfinder-profile-body {
+  display: grid;
+  gap: 36px;
+}
+
+.teamfinder-profile-identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+  /* Clears the stacked close + request buttons in the top-right chrome. */
+  padding-right: 132px;
+}
+
+.teamfinder-profile-avatar .teamfinder-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--tf-radius-card);
+  font-size: var(--tf-text-subject);
+}
+
+.teamfinder-profile-identity-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.teamfinder-profile-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.teamfinder-profile-name {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.teamfinder-profile-identity-copy .teamfinder-card-team {
+  margin: 0;
+}
+
+.teamfinder-profile-education {
+  margin: 0;
+  color: var(--tf-c-soft);
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.teamfinder-profile-details {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.teamfinder-profile-bio {
+  margin: 0 !important;
+  font-size: var(--tf-text-manage-body) !important;
+  line-height: 1.5 !important;
+  text-wrap: pretty;
+}
+
+.teamfinder-profile-bio .teamfinder-meta-label {
+  display: inline;
+  margin: 0;
+  color: var(--tf-c-label);
+  font-size: inherit;
+  font-weight: 500;
+}
+
+.teamfinder-profile-meta-list {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.teamfinder-profile-meta-list > p {
+  margin: 0;
+  color: var(--tf-c-body);
+  font-size: var(--tf-text-manage-body);
+  font-weight: 500;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.teamfinder-profile-meta-list .teamfinder-meta-label {
+  display: inline;
+  margin: 0;
+  color: var(--tf-c-label);
+  font-size: inherit;
+  font-weight: 500;
+}
+
+.teamfinder-profile-contact {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.teamfinder-profile-contact-title {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-ui);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * HACKER PROFILE MODAL
+ *
+ * Structure follows the Figma design (name + pronouns, then a wide left rail
+ * of prose and a narrow right rail of chips and links). Every type size, color
+ * and radius is taken from the tokens already in this file rather than the
+ * design's raw values, so the modal reads as part of the same product.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+.teamfinder-profile-headline {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+  /* Clears the close button only — Request now sits in the left rail. */
+  padding-right: 56px;
+}
+
+.teamfinder-profile-pronouns {
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-ui);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.teamfinder-profile-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+  gap: 56px;
+  align-items: start;
+  min-width: 0;
+}
+
+.teamfinder-profile-column {
+  display: grid;
+  gap: 26px;
+  align-content: start;
+  min-width: 0;
+}
+
+.teamfinder-profile-section {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Request closes the wide rail, with a rule above it separating the action from
+   the profile content it acts on. Right-aligned rather than stretched: across
+   this column a full-width fill would read as a banner, not a button. */
+/* Same action pair as a card: the quiet escape sits beside the commit, both
+   flush right. The dialog previously offered only the commit, which left no
+   labelled way back out except the corner ✕. */
+.teamfinder-profile-action-slot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--tf-card-action-pair-gap);
+  min-width: 0;
+  padding-top: 26px;
+  border-top: 1px solid var(--tf-c-divider);
+  /* Pulls the rule down toward the button, away from the section above. */
+  margin-top: 6px;
+}
+
+.teamfinder-profile-action-slot .text-button {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 4px;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-card-btn-size);
+  font-weight: 500;
+}
+
+/* The study line under the name in the dialog is the same object as a card's
+   subtitle, so it uses that class and only adds the spacing the dialog head
+   needs. */
+.teamfinder-profile-subtitle {
+  /* The dialog body is a 36px-gap grid and the subtitle is a third child in
+     it, which put a full section gap between a name and its own study line.
+     Pulled back up so the two read as one head, the way they do on a card. */
+  margin: -22px 0 0;
+  white-space: normal;
+}
+
+.teamfinder-profile-action-slot[hidden] {
+  display: none !important;
+}
+
+.teamfinder-profile-action-slot .teamfinder-profile-request {
+  min-width: 150px;
+  justify-content: center;
+}
+
+.teamfinder-profile-section-title {
+  margin: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-el-section-size);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.teamfinder-profile-about {
+  margin: 0;
+  color: var(--tf-c-body);
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.teamfinder-profile-none {
+  margin: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* The design's bordered panel for a school or a role. */
+.teamfinder-profile-entries {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.teamfinder-profile-entry {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 18px 22px;
+  border: 1px solid var(--tf-c-divider);
+  border-radius: var(--tf-radius-card);
+  background: var(--tf-c-surface-subtle);
+}
+
+.teamfinder-profile-entry-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+
+.teamfinder-profile-entry-title {
+  margin: 0;
+  min-width: 0;
+  color: var(--tf-c-text-primary);
+  font-size: var(--tf-text-body);
+  font-weight: 500;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.teamfinder-profile-entry-aside {
+  margin: 0;
+  flex: 0 0 auto;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-label);
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.teamfinder-profile-entry-sub {
+  margin: 0;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-label);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.teamfinder-profile-entry-list {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-text-label);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.teamfinder-profile-entry-list li {
+  text-wrap: pretty;
+}
+
+/* Card chip rows clip to one line; here there is room to wrap. */
+.teamfinder-tags.is-wrap {
+  flex-wrap: wrap;
+  overflow: visible;
+  gap: 10px;
+}
+
+.teamfinder-profile-socials {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+/* Both the links and the copy buttons render as this one target. The 32px box
+   keeps a comfortable hit area around a 15px glyph — the icon alone would be
+   well under the minimum for a pointer, let alone a finger. */
+.teamfinder-profile-social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: var(--tf-radius-chip);
+  background: transparent;
+  color: var(--tf-c-text-tertiary);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.teamfinder-profile-social:hover {
+  color: var(--tf-c-text-primary);
+  background: var(--tf-c-surface-hover);
+}
+
+.teamfinder-profile-social:focus-visible {
+  outline: 2px solid var(--tf-c-focus);
+  outline-offset: 2px;
+}
+
+/* The icons are authored with currentColor, so they take the row's ink. */
+.teamfinder-profile-social-icon {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+}
+
+@media (max-width: 760px) {
+  .teamfinder-profile-columns {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+}
+
+.teamfinder-profile-request.is-requested,
+.teamfinder-profile-request:disabled {
+  color: var(--tf-c-text-tertiary);
+  background: var(--tf-c-surface-sunken);
+  cursor: default;
+}
+
+@media (max-width: 1100px) {
+  .teamfinder-layout {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+    overflow: hidden;
+  }
+
+  .teamfinder-sidebar {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .teamfinder-page-layout {
+    grid-template-columns: 1fr;
+    row-gap: 24px;
+    column-gap: 0;
+  }
+
+  .teamfinder-page-intro {
+    position: static;
+  }
+
+  .teamfinder-search-wrap {
+    width: 200px;
+  }
+}
+
+@media (max-width: 700px) {
+  .teamfinder-toolbar {
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 12px;
+    padding-bottom: 10px;
+  }
+
+  .teamfinder-search-wrap {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 0;
+    order: -1;
+  }
+
+  .teamfinder-tabs {
+    width: 100%;
+    gap: 28px;
+  }
+
+  .teamfinder-card-grid {
+    gap: 16px;
+  }
+
+  .teamfinder-card-grid,
+  .teamfinder-card-grid.is-compact {
+    grid-template-columns: 1fr;
+  }
+
+  .teamfinder-members-table {
+    grid-template-columns: 1fr;
+  }
+
+  .teamfinder-members-row {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .teamfinder-row {
+    flex-direction: column;
+  }
+
+  .teamfinder-row-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .teamfinder-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teamfinder-manage-meta-row.is-editing {
+    grid-template-columns: 1fr;
+  }
+
+  .teamfinder-layout.is-manage,
+  .teamfinder-layout.is-requests {
+    --tf-section-gap: 24px;
+  }
+
+  .teamfinder-content-section {
+    gap: 12px;
+  }
+
+  .teamfinder-manage-identity {
+    align-items: flex-start;
+  }
+
+  .teamfinder-manage-identity-main {
+    flex-wrap: wrap;
+  }
+}
+
+/* On narrow screens a 24px inset on a ~327px modal leaves very little measure,
+   so step the padding down and let the modal sit closer to the viewport edge. */
+@media (max-width: 480px) {
+  :root {
+    --tf-modal-pad-x: 18px;
+    --tf-modal-pad-top: 16px;
+    --tf-modal-pad-bottom: 16px;
+    --tf-modal-actions-gap: 20px;
+  }
+
+  .teamfinder-note-dialog,
+  .teamfinder-profile-dialog {
+    width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+  }
+
+  .teamfinder-profile-dialog {
+    --tf-modal-pad-x: 20px;
+    --tf-modal-pad-top: 18px;
+    --tf-modal-pad-bottom: 24px;
+  }
+
+  .teamfinder-profile-columns {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .teamfinder-confirm-dialog,
+  .teamfinder-help-dialog {
+    width: calc(100vw - 32px);
+  }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * REQUESTS — ROW ACTIONS
+ *
+ * Sizes are the Figma values put through the same correction as the rest of
+ * the page (Figma 11 -> 14, SemiBold -> 400), so this panel reads at the
+ * same scale as Hackers rather than a step smaller.
+ *
+ * Decline stays a plain label while Accept takes the accent: only one of the
+ * pair is the decision worth drawing, and giving both chrome would make them
+ * read as equal choices.
+ * ───────────────────────────────────────────────────────────────────────── */
+.teamfinder-stack.is-request-cards .teamfinder-row-actions .text-button[data-action="decline-request"] {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tf-c-text-tertiary);
+  font-size: var(--tf-el-request-action-size);
+  font-weight: var(--tf-el-section-weight);
+  line-height: 20px;
+}
+
+.teamfinder-stack.is-request-cards .teamfinder-row-actions .text-button[data-action="decline-request"]:hover {
+  color: var(--tf-c-text-primary);
+  background: transparent;
+}
+
+.teamfinder-stack.is-request-cards .teamfinder-row-actions .button[data-action="accept-request"],
+.teamfinder-stack.is-request-cards .teamfinder-row-actions .teamfinder-request-status {
+  min-height: 0;
+  padding: 12px 16px;
+  border-radius: var(--tf-radius-chip);
+  font-size: var(--tf-el-request-action-size);
+  font-weight: var(--tf-el-section-weight);
+  line-height: 20px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * TEAM FINDER — BUTTON BASE
+ *
+ * The app-wide `.button` sits on the old zinc tokens (--line / --panel).
+ * Inside Team Finder it should sit on this page's ramp and radius instead.
+ *
+ * The scope is wrapped in :where() so the rule carries only `.button`'s own
+ * specificity — every accent and per-context rule further down still wins
+ * on its own terms, without any of them having to be re-specified.
+ * ───────────────────────────────────────────────────────────────────────── */
+:where(#page-teamfinder, .teamfinder-note-dialog, .teamfinder-profile-dialog) .button,
+:where(#page-teamfinder, .teamfinder-note-dialog, .teamfinder-profile-dialog) .icon-button {
+  border-color: var(--tf-c-stroke);
+  border-radius: var(--tf-radius-control);
+  background: var(--tf-c-surface);
+  color: var(--tf-c-text-secondary);
+  font-size: var(--tf-text-ui);
+  font-weight: var(--tf-weight-medium);
+}
+
+:where(#page-teamfinder, .teamfinder-note-dialog, .teamfinder-profile-dialog) .button:hover,
+:where(#page-teamfinder, .teamfinder-note-dialog, .teamfinder-profile-dialog) .icon-button:hover {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-subtle);
+  color: var(--tf-c-text-primary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * TEAM FINDER — ACTION COLOR
+ *
+ * Blue appears in exactly three roles and nowhere decorative:
+ *   solid  — the committing action of a view (one per view)
+ *   soft   — an available action repeated in a list, and current selection
+ *   focus  — keyboard focus, so it is findable rather than inferred
+ *
+ * Everything else stays on the neutral ramp. That rarity is what gives the
+ * blue its force; spending it on decoration is what would flatten it.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/* Solid: modal commit + the page's one primary CTA. */
+/* Keyed on .primary-button, the semantic class, rather than on a list of
+   data-action values. The list had to be extended by hand every time a screen
+   gained a commit — which is why "Edit profile" came out looking secondary —
+   and it meant the markup could not say "this is the primary action" without
+   someone also editing the stylesheet. */
+#page-teamfinder .primary-button,
+.teamfinder-note-dialog .primary-button,
+.teamfinder-profile-dialog .primary-button,
+.teamfinder-profile-request {
+  min-height: 40px;
+  padding: 10px 18px;
+  border-color: var(--tf-c-action);
+  background: var(--tf-c-action);
+  color: var(--tf-c-text-on-action);
+  font-weight: 700;
+}
+
+#page-teamfinder .primary-button:hover:not(:disabled),
+.teamfinder-note-dialog .primary-button:hover:not(:disabled),
+.teamfinder-profile-dialog .primary-button:hover:not(:disabled),
+.teamfinder-profile-request:hover:not(:disabled):not(.is-requested) {
+  border-color: var(--tf-c-action-hover);
+  background: var(--tf-c-action-hover);
+  color: var(--tf-c-text-on-action);
+}
+
+#page-teamfinder .primary-button:active:not(:disabled),
+.teamfinder-note-dialog .primary-button:active:not(:disabled),
+.teamfinder-profile-dialog .primary-button:active:not(:disabled),
+.teamfinder-profile-request:active:not(:disabled) {
+  border-color: var(--tf-c-action-active);
+  background: var(--tf-c-action-active);
+}
+
+/* Secondary sibling stays neutral so the pair reads as a hierarchy, not two
+   equal choices. Which one is primary now comes from the markup — whichever
+   carries .primary-button — rather than from the action name, so the design
+   can change its mind without a stylesheet edit. */
+.teamfinder-sidebar-actions .button:not(.primary-button) {
+  border-color: var(--tf-c-stroke);
+  background: var(--tf-c-surface);
+  color: var(--tf-c-text-secondary);
+}
+
+.teamfinder-sidebar-actions .button:not(.primary-button):hover {
+  border-color: var(--tf-c-stroke-strong);
+  background: var(--tf-c-surface-subtle);
+  color: var(--tf-c-text-primary);
+}
+
+/* Solid: the repeated card action, per the final design (node 333:654). It
+   was outlined while the accent was a bright blue, where dozens of filled
+   chips at once would have been noise. The navy is dark and low-chroma
+   enough to carry a fill at that count, and a solid button is the clearer
+   invitation — so the card action now matches the page's other commits. */
+.teamfinder-card-actions .teamfinder-request-button {
+  border-color: var(--tf-c-action);
+  background: var(--tf-c-action);
+  color: var(--tf-c-text-on-action);
+  font-weight: var(--tf-el-card-btn-weight);
+}
+
+.teamfinder-card-actions .teamfinder-request-button:hover:not(:disabled):not(.is-requested) {
+  border-color: var(--tf-c-action-hover);
+  background: var(--tf-c-action-hover);
+  color: var(--tf-c-text-on-action);
+}
+
+.teamfinder-card-actions .teamfinder-request-button:active:not(:disabled):not(.is-requested) {
+  border-color: var(--tf-c-action-active);
+  background: var(--tf-c-action-active);
+}
+
+/* Sent: the request is spent, so the button empties out to the soft tint and
+   keeps the navy label — same hue, a step back in weight, which reads as
+   "done" rather than "unavailable". The label also changes ("Request" ->
+   "Requested"), so the state is never carried by color alone. */
+.teamfinder-card-actions .teamfinder-request-button.is-requested,
+.teamfinder-profile-request.is-requested {
+  border-color: var(--tf-c-action-soft-line);
+  background: var(--tf-c-action-soft);
+  color: var(--tf-c-action-text);
+  font-weight: var(--tf-weight-medium);
+  cursor: default;
+}
+
+/* Genuinely unavailable actions still drop out of the accent entirely — a
+   full team or a disabled commit is not the same state as a sent request. */
+.teamfinder-card-actions .teamfinder-request-button:disabled:not(.is-requested),
+.teamfinder-card-actions .teamfinder-full-badge,
+.teamfinder-profile-request:disabled:not(.is-requested),
+.teamfinder-note-dialog .primary-button:disabled {
+  border-color: var(--tf-c-action-disabled-line);
+  background: var(--tf-c-action-disabled);
+  color: var(--tf-c-text-tertiary);
+  font-weight: var(--tf-weight-medium);
+  cursor: default;
+}
+
+/* Wayfinding and state. */
+.teamfinder-tab.is-active::after {
+  background: var(--tf-c-action);
+}
+
+/* Pending-count chip. Neutral while the tab is idle so it reads as a quantity;
+   it takes the accent only on the active tab, where the accent already lives
+   in the underline. Size is fixed against the tab's 400 -> 600 weight change
+   so switching tabs doesn't reflow the strip. */
+.teamfinder-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--tf-c-action);
+  color: var(--tf-c-text-on-action);
+  font-size: var(--text-micro);
+  font-weight: var(--tf-weight-medium);
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  box-sizing: border-box;
+}
+
+/* The badge is a quantity, not a selection cue — it reads the same on the
+   idle tab as on the active one, which is how the design draws it. */
+
+.teamfinder-switch.is-on {
+  background: var(--tf-c-action);
+}
+
+/* Focus: solid ring rather than a translucent one, so contrast against the
+   surface behind it is fixed instead of depending on what it overlaps. */
+#page-teamfinder .button:focus-visible,
+#page-teamfinder .text-button:focus-visible,
+#page-teamfinder input:focus-visible,
+#page-teamfinder select:focus-visible,
+#page-teamfinder [class*="teamfinder-"]:focus-visible,
+.teamfinder-note-dialog .button:focus-visible,
+.teamfinder-note-dialog .text-button:focus-visible,
+.teamfinder-note-dialog input:focus-visible,
+.teamfinder-note-dialog textarea:focus-visible,
+.teamfinder-profile-dialog .button:focus-visible,
+.teamfinder-profile-dialog .text-button:focus-visible {
+  outline: 2px solid var(--tf-c-focus);
+  outline-offset: 2px;
+}
+
+/* Modal fields pick up the shared stroke token and a blue focus edge. */
+.teamfinder-note-field input,
+.teamfinder-note-field textarea {
+  border-color: var(--tf-c-stroke);
+}
+
+.teamfinder-note-field input:focus,
+.teamfinder-note-field textarea:focus {
+  outline: 2px solid var(--tf-c-focus);
+  outline-offset: 1px;
+  border-color: var(--tf-c-action);
+}
+
+/* Quiet text buttons: tertiary at rest (5.1:1 — the old #a1a1aa put button
+   labels at 2.56:1), primary on hover. */
+.teamfinder-card-actions .text-button,
+.teamfinder-row-actions .text-button,
+.teamfinder-note-dialog .text-button {
+  color: var(--tf-c-text-tertiary);
+}
+
+.teamfinder-card-actions .text-button:hover,
+.teamfinder-row-actions .text-button:hover,
+.teamfinder-note-dialog .text-button:hover {
+  color: var(--tf-c-text-primary);
+}

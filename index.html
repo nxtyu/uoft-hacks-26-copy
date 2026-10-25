@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="UofTHacks organizer event schedule manager"
+    />
+    <title>UofTHacks · Event Manager</title>
+    <link rel="stylesheet" href="./css/tokens.css" />
+    <link rel="stylesheet" href="./css/shell.css" />
+    <link rel="stylesheet" href="./css/event-manager.css" />
+    <link rel="stylesheet" href="./css/shift-manager.css" />
+    <link rel="stylesheet" href="./css/my-shifts.css" />
+    <link rel="stylesheet" href="./css/team-finder.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img src="./assets/brand/logo.svg" alt="UofTHacks" />
+          <span>Dashboard</span>
+        </div>
+
+        <!-- The design's nav (Home, Application, Team Finder, Calendar,
+             Gallery) merged with the pages this prototype actually has. The
+             design's "Calendar" is this app's Event Manager, so it keeps that
+             name and the design's calendar icon; Shift Manager and My Shifts
+             sit with it because they are the same family of screen. Home,
+             Application and Gallery are in the design but not built yet, so
+             they route to placeholder pages rather than dead links. -->
+        <nav aria-label="Dashboard navigation">
+          <a class="nav-link" href="#home" data-page="home">
+            <img src="./assets/icons/nav-home.svg" alt="" />
+            Home
+          </a>
+          <a class="nav-link" href="#application" data-page="application">
+            <img src="./assets/icons/nav-application.svg" alt="" />
+            Application
+          </a>
+          <a class="nav-link" href="#teamfinder" data-page="teamfinder">
+            <img src="./assets/icons/nav-teamfinder.svg" alt="" />
+            Team Finder
+          </a>
+          <a class="nav-link active" href="#events" data-page="events">
+            <img src="./assets/icons/nav-calendar.svg" alt="" />
+            Event Manager
+          </a>
+          <a class="nav-link" href="#shifts" data-page="shifts">
+            <img src="./assets/icons/people.svg" alt="" />
+            Shift Manager
+          </a>
+          <a class="nav-link" href="#myshifts" data-page="myshifts">
+            <img src="./assets/icons/shifts.svg" alt="" />
+            My Shifts
+          </a>
+          <a class="nav-link" href="#gallery" data-page="gallery">
+            <img src="./assets/icons/nav-gallery.svg" alt="" />
+            Gallery
+          </a>
+          <a class="nav-link" href="#profile" data-page="profile">
+            <img src="./assets/icons/profile.svg" alt="" />
+            Profile
+          </a>
+        </nav>
+
+        <div class="user">
+          <img class="avatar" src="./assets/images/avatar.svg" alt="" />
+          <div>
+            <strong>Natalie Yu</strong>
+            <span>nxtyu@uwaterloo.ca</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="content-area">
+      <main id="page-events" class="page">
+        <header class="page-header">
+          <div>
+            <h1>Event Manager</h1>
+          </div>
+        </header>
+
+        <section class="page-chrome page-band-end" aria-label="Calendar controls">
+          <div class="toolbar-group page-header-actions">
+            <div class="calendar-toolbar-filters">
+              <button
+                class="button"
+                id="filter-button"
+                type="button"
+                aria-label="Filter events"
+                aria-expanded="false"
+                aria-controls="filter-menu"
+              >
+                <img src="./assets/icons/filter.svg" alt="" />
+                <span>Filters</span>
+              </button>
+              <div class="filter-menu" id="filter-menu" hidden>
+                <p>Event Types</p>
+                <label><input type="checkbox" value="Ceremony" checked /> Ceremony</label>
+                <label><input type="checkbox" value="Food" checked /> Food</label>
+                <label><input type="checkbox" value="Workshop" checked /> Workshop</label>
+                <label><input type="checkbox" value="Social" checked /> Social</label>
+                <p class="filter-section">Calendar View</p>
+                <label><input type="radio" name="view-mode" value="3" checked /> 3 Day</label>
+              </div>
+            </div>
+            <button class="button primary-button" id="add-button" type="button">
+              <img src="./assets/icons/add.svg" alt="" />
+              <span>Create Event</span>
+            </button>
+          </div>
+        </section>
+
+        <div class="page-body">
+          <section class="calendar-card">
+            <div class="calendar-scroll">
+              <div class="calendar" id="calendar">
+                <div class="corner-cell event-month-corner">
+                  <div class="month-picker">
+                    <button
+                      class="month-label-button"
+                      id="month-label"
+                      type="button"
+                      aria-haspopup="dialog"
+                      aria-expanded="false"
+                    >
+                      <span id="month-label-text">Jan. 2027</span>
+                    </button>
+                    <div class="mini-calendar" id="mini-calendar" role="dialog" aria-label="Jump to date" hidden>
+                      <div class="mini-calendar-header">
+                        <button class="mini-nav" id="mini-previous" type="button" aria-label="Previous month">‹</button>
+                        <span class="mini-calendar-title" id="mini-calendar-title"></span>
+                        <button class="mini-nav" id="mini-next" type="button" aria-label="Next month">›</button>
+                      </div>
+                      <div class="mini-calendar-weekdays" id="mini-calendar-weekdays"></div>
+                      <div class="mini-calendar-grid" id="mini-calendar-grid"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="day-headers" id="day-headers"></div>
+                <div class="time-axis" id="time-axis"></div>
+                <div class="calendar-grid" id="calendar-grid"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <main id="page-shifts" class="page" hidden>
+        <header class="page-header" id="shift-page-title">
+          <div>
+            <h1>Shift Manager</h1>
+          </div>
+        </header>
+
+        <div class="page-chrome page-band-end shift-page-chrome" id="shift-main-header">
+          <div class="toolbar-group page-header-actions" id="shift-table-toolbar" hidden>
+            <button class="button" type="button" id="shift-table-upload-button">
+              <img src="./assets/icons/add.svg" alt="" />
+              <span>Upload</span>
+            </button>
+            <div class="shift-table-toolbar-filters">
+              <button
+                class="button"
+                type="button"
+                id="shift-table-filter-button"
+                aria-label="Filter table"
+                aria-expanded="false"
+                aria-controls="shift-table-filter-menu"
+              >
+                <img src="./assets/icons/filter.svg" alt="" />
+                <span>Filters</span>
+              </button>
+              <div class="filter-menu shift-table-filter-menu" id="shift-table-filter-menu" hidden>
+                <div class="shift-filter-item">
+                  <button
+                    class="shift-filter-submenu-trigger"
+                    type="button"
+                    id="shift-filter-role-trigger"
+                    aria-expanded="false"
+                    aria-controls="shift-filter-role-menu"
+                  >
+                    <span>Role</span>
+                    <span class="select-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div class="shift-filter-submenu" id="shift-filter-role-menu">
+                    <label><input type="checkbox" name="shift-table-role-filter" value="Volunteer" checked /> Volunteer</label>
+                    <label><input type="checkbox" name="shift-table-role-filter" value="Mentor" checked /> Mentor</label>
+                    <label><input type="checkbox" name="shift-table-role-filter" value="Organizer" checked /> Organizer</label>
+                  </div>
+                </div>
+                <div class="shift-filter-item">
+                  <button
+                    class="shift-filter-submenu-trigger"
+                    type="button"
+                    id="shift-filter-cpr-trigger"
+                    aria-expanded="false"
+                    aria-controls="shift-filter-cpr-menu"
+                  >
+                    <span>CPR</span>
+                    <span class="select-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div class="shift-filter-submenu" id="shift-filter-cpr-menu">
+                    <label><input type="radio" name="shift-table-cpr-filter" value="all" checked /> All</label>
+                    <label><input type="radio" name="shift-table-cpr-filter" value="trained" /> CPR trained</label>
+                    <label><input type="radio" name="shift-table-cpr-filter" value="untrained" /> Not CPR trained</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="button" type="button" id="shift-view-toggle" data-target-view="calendar">
+              <img src="./assets/icons/view-calendar.svg" alt="" />
+              <span>Calendar View</span>
+            </button>
+          </div>
+          <div class="toolbar-group page-header-actions" id="shift-calendar-toolbar">
+            <div class="shift-calendar-toolbar-filters">
+              <button
+                class="button"
+                type="button"
+                id="shift-calendar-filter-button"
+                aria-label="Filter calendar"
+                aria-expanded="false"
+                aria-controls="shift-calendar-filter-menu"
+              >
+                <img src="./assets/icons/filter.svg" alt="" />
+                <span>Filters</span>
+              </button>
+              <div class="filter-menu shift-calendar-filter-menu" id="shift-calendar-filter-menu" hidden>
+                <p>Event Types</p>
+                <label><input type="checkbox" name="shift-calendar-type-filter" value="Ceremony" checked /> Ceremony</label>
+                <label><input type="checkbox" name="shift-calendar-type-filter" value="Food" checked /> Food</label>
+                <label><input type="checkbox" name="shift-calendar-type-filter" value="Workshop" checked /> Workshop</label>
+                <label><input type="checkbox" name="shift-calendar-type-filter" value="Social" checked /> Social</label>
+              </div>
+            </div>
+            <button class="button" type="button" id="shift-table-view-button" data-target-view="table">
+              <img src="./assets/icons/view-table.svg" alt="" />
+              <span>Table View</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="shift-profile-toolbar page-band-end" id="shift-profile-toolbar" hidden>
+          <div class="shift-profile-toolbar-start">
+            <button class="icon-button" type="button" id="shift-profile-back" aria-label="Back">
+              <img src="./assets/icons/arrow-left.svg" alt="" />
+            </button>
+            <div class="shift-profile-identity">
+              <h2 id="shift-profile-name">Volunteer</h2>
+              <span class="shift-profile-identity-sep" aria-hidden="true"></span>
+              <p id="shift-profile-meta">Volunteer</p>
+            </div>
+          </div>
+          <p class="shift-profile-shift-count" id="shift-profile-shift-count">0 shifts assigned</p>
+        </div>
+
+        <div class="page-body">
+          <section class="calendar-card shift-table-view" id="shift-table-view" aria-label="Volunteer table" hidden>
+            <div class="shift-table-scroll">
+              <table class="shift-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Phone</th>
+                    <th>Preferences</th>
+                    <th>Availability</th>
+                    <th>CPR</th>
+                    <th>Shifts</th>
+                  </tr>
+                </thead>
+                <tbody id="shift-table-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="calendar-card shift-profile-view" id="shift-profile-view" aria-label="Volunteer profile" hidden>
+            <div class="calendar-heading shift-profile-heading">
+              <span class="shift-profile-month" id="shift-profile-month">January 2027</span>
+            </div>
+
+            <div class="calendar-scroll">
+              <div class="calendar" id="shift-profile-calendar" data-day-count="3" style="--day-count: 3">
+                <div class="corner-cell" aria-hidden="true"></div>
+                <div class="day-headers" id="shift-profile-day-headers"></div>
+                <div class="time-axis" id="shift-profile-time-axis"></div>
+                <div class="calendar-grid" id="shift-profile-calendar-grid"></div>
+              </div>
+            </div>
+
+            <footer class="shift-profile-footer">
+              <div class="shift-profile-legend" aria-label="Legend">
+                <span class="shift-profile-legend-item">
+                  <span class="shift-profile-legend-swatch is-available-window" aria-hidden="true"></span>
+                  Available
+                </span>
+                <span class="shift-profile-legend-item">
+                  <span class="shift-profile-legend-swatch is-outside-availability" aria-hidden="true"></span>
+                  Unavailable
+                </span>
+              </div>
+              <button class="button shift-profile-assign-button" type="button" id="shift-profile-assign" disabled>
+                Save changes
+              </button>
+            </footer>
+          </section>
+
+          <section class="shift-calendar-view" id="shift-calendar-view" aria-label="Shift calendar">
+            <div class="shift-split">
+              <article class="calendar-card shift-half">
+                <div class="calendar-heading calendar-card-nav shift-calendar-heading">
+                  <div class="toolbar-group calendar-nav" aria-label="Shift calendar navigation">
+                    <div class="month-picker">
+                      <button
+                        class="month-label-button"
+                        type="button"
+                        id="shift-month-label"
+                        aria-haspopup="dialog"
+                        aria-expanded="false"
+                      >
+                        <span id="shift-month-label-text">Jan. 2027</span>
+                      </button>
+                      <div class="mini-calendar" id="shift-mini-calendar" role="dialog" aria-label="Jump to date" hidden>
+                        <div class="mini-calendar-header">
+                          <button class="mini-nav" id="shift-mini-previous" type="button" aria-label="Previous month">‹</button>
+                          <span class="mini-calendar-title" id="shift-mini-calendar-title"></span>
+                          <button class="mini-nav" id="shift-mini-next" type="button" aria-label="Next month">›</button>
+                        </div>
+                        <div class="mini-calendar-weekdays" id="shift-mini-calendar-weekdays"></div>
+                        <div class="mini-calendar-grid" id="shift-mini-calendar-grid"></div>
+                      </div>
+                    </div>
+                    <button class="icon-button" type="button" id="shift-previous" aria-label="Previous day">
+                      <img src="./assets/icons/arrow-left.svg" alt="" />
+                    </button>
+                    <button class="icon-button" type="button" id="shift-next" aria-label="Next day">
+                      <img class="arrow-forward" src="./assets/icons/arrow-right.svg" alt="" />
+                    </button>
+                  </div>
+                  <span class="day-header is-today" id="shift-heading-day"><span>Fri 22</span></span>
+                </div>
+
+                <div class="calendar-scroll">
+                  <div class="calendar" id="shift-calendar" data-day-count="1" style="--day-count: 1">
+                    <div class="corner-cell" aria-hidden="true"></div>
+                    <div class="day-headers" id="shift-day-headers" aria-hidden="true"></div>
+                    <div class="time-axis" id="shift-time-axis"></div>
+                    <div class="calendar-grid" id="shift-calendar-grid"></div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="calendar-card shift-half shift-assign-panel is-empty" id="shift-assign-panel">
+                <div class="shift-assign-panel-empty" id="shift-assign-empty">
+                  <p>Select an event on the calendar to assign shifts.</p>
+                </div>
+                <div class="shift-assign-main" id="shift-assign-main" hidden>
+                  <header class="shift-assign-header">
+                    <h2>Opening Ceremony</h2>
+                    <p class="shift-assign-datetime">Sunday, January 23 · 2:30 – 5:30 PM</p>
+                    <div class="shift-assign-details" id="shift-assign-details" hidden>
+                      <div class="detail-content">
+                        <div class="detail-row">
+                          <img src="./assets/icons/event-location.svg" alt="" />
+                          <p id="shift-detail-location"></p>
+                        </div>
+                        <div class="detail-row">
+                          <img src="./assets/icons/event-description.svg" alt="" />
+                          <p id="shift-detail-description"></p>
+                        </div>
+                        <div class="detail-row detail-tags-row">
+                          <img src="./assets/icons/event-tags.svg" alt="" />
+                          <div class="detail-tags" id="shift-detail-tags"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      class="text-button cancel-button shift-view-details"
+                      type="button"
+                      aria-expanded="false"
+                      aria-controls="shift-assign-details"
+                    >
+                      View Details
+                    </button>
+                  </header>
+
+                  <div class="shift-assign-section" data-shift-role="volunteer">
+                    <div class="shift-assign-title-row">
+                      <div class="shift-assign-heading">
+                        <h3>Volunteer Shifts</h3>
+                        <span class="shift-fill-indicator" data-fill-indicator>0/0</span>
+                      </div>
+                      <div class="shift-stepper" role="group" aria-label="Volunteer slot quantity">
+                        <button class="shift-stepper-button" type="button" data-step="-1" aria-label="Decrease volunteer slots">−</button>
+                        <span class="shift-stepper-value" data-stepper-value>0</span>
+                        <button class="shift-stepper-button" type="button" data-step="1" aria-label="Increase volunteer slots">+</button>
+                      </div>
+                    </div>
+                    <div class="shift-slot-list" data-slot-list></div>
+                  </div>
+
+                  <div class="shift-assign-section" data-shift-role="mentor">
+                    <div class="shift-assign-title-row">
+                      <div class="shift-assign-heading">
+                        <h3>Mentor Shifts</h3>
+                        <span class="shift-fill-indicator" data-fill-indicator>0/0</span>
+                      </div>
+                      <div class="shift-stepper" role="group" aria-label="Mentor slot quantity">
+                        <button class="shift-stepper-button" type="button" data-step="-1" aria-label="Decrease mentor slots">−</button>
+                        <span class="shift-stepper-value" data-stepper-value>0</span>
+                        <button class="shift-stepper-button" type="button" data-step="1" aria-label="Increase mentor slots">+</button>
+                      </div>
+                    </div>
+                    <div class="shift-slot-list" data-slot-list></div>
+                  </div>
+                </div>
+
+                <div class="shift-assign-picker" id="shift-assign-picker" hidden>
+                  <header class="shift-assign-picker-header">
+                    <button class="shift-assign-picker-back" type="button" id="shift-assign-picker-back">
+                      <img src="./assets/icons/arrow-left.svg" alt="" />
+                      Back
+                    </button>
+                    <h3 id="shift-assign-picker-title">Assign Shift</h3>
+                  </header>
+                  <div class="shift-assign-search-row">
+                    <label class="shift-assign-search field">
+                      <span class="visually-hidden">Search volunteers</span>
+                      <img class="shift-assign-search-icon" src="./assets/icons/search.svg" alt="" width="16" height="16" />
+                      <input
+                        type="search"
+                        id="shift-assign-search"
+                        placeholder="Search volunteers…"
+                        autocomplete="off"
+                      />
+                    </label>
+                    <button
+                      class="icon-button"
+                      type="button"
+                      id="shift-assign-filter-button"
+                      aria-label="Filter people"
+                      aria-expanded="false"
+                      aria-controls="shift-assign-filter-menu"
+                    >
+                      <img src="./assets/icons/filter.svg" alt="" />
+                    </button>
+                    <div class="filter-menu shift-assign-filter-menu" id="shift-assign-filter-menu" hidden>
+                      <p>Availability</p>
+                      <label><input type="radio" name="shift-availability-filter" value="all" checked /> All</label>
+                      <label><input type="radio" name="shift-availability-filter" value="available" /> Available</label>
+                      <label><input type="radio" name="shift-availability-filter" value="unavailable" /> Unavailable</label>
+                    </div>
+                  </div>
+                  <div class="shift-assign-people" id="shift-assign-people" role="listbox" aria-label="Available people"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <main id="page-myshifts" class="page" hidden>
+        <header class="page-header">
+          <div>
+            <h1>My Shifts</h1>
+          </div>
+        </header>
+
+        <div class="myshifts-toolbar page-band-end" id="myshifts-toolbar">
+          <div class="toolbar-group calendar-nav">
+            <span class="myshifts-month-label" id="myshifts-month-label-text">January 2027</span>
+            <button class="icon-button" type="button" id="myshifts-previous" aria-label="Previous weekend">
+              <img src="./assets/icons/arrow-left.svg" alt="" />
+            </button>
+            <button class="icon-button" type="button" id="myshifts-next" aria-label="Next weekend">
+              <img class="arrow-forward" src="./assets/icons/arrow-right.svg" alt="" />
+            </button>
+          </div>
+          <div class="myshifts-identity" id="myshifts-identity">
+            <span id="myshifts-role">Volunteer</span>
+            <span class="myshifts-identity-sep" aria-hidden="true"></span>
+            <span id="myshifts-count">0 shifts assigned</span>
+          </div>
+        </div>
+
+        <div class="page-body">
+          <div class="myshifts-split">
+            <section class="calendar-card myshifts-calendar-card" aria-label="Your assigned shifts calendar">
+              <div class="calendar-scroll">
+                <div class="calendar" id="myshifts-calendar" data-day-count="3" style="--day-count: 3">
+                  <div class="corner-cell" aria-hidden="true"></div>
+                  <div class="day-headers" id="myshifts-day-headers"></div>
+                  <div class="time-axis" id="myshifts-time-axis"></div>
+                  <div class="calendar-grid" id="myshifts-calendar-grid"></div>
+                </div>
+              </div>
+            </section>
+  
+            <aside class="calendar-card myshifts-detail-panel" id="myshifts-detail-panel" aria-live="polite">
+              <div class="myshifts-detail-empty" id="myshifts-detail-empty">
+                <p>Select a shift on the calendar to see volunteer instructions.</p>
+              </div>
+              <div class="myshifts-detail" id="myshifts-detail" hidden>
+                <header class="myshifts-detail-header">
+                  <h2 id="myshifts-detail-title">Shift</h2>
+                  <p class="myshifts-detail-datetime" id="myshifts-detail-datetime"></p>
+                  <div class="myshifts-detail-facts detail-content">
+                    <div class="detail-row">
+                      <img src="./assets/icons/event-location.svg" alt="" />
+                      <p id="myshifts-detail-location"></p>
+                    </div>
+                    <div class="detail-row">
+                      <img src="./assets/icons/event-description.svg" alt="" />
+                      <p id="myshifts-detail-description"></p>
+                    </div>
+                    <div class="detail-row">
+                      <img src="./assets/icons/event-people.svg" alt="" />
+                      <p id="myshifts-detail-volunteers"></p>
+                    </div>
+                    <div class="detail-row detail-tags-row">
+                      <img src="./assets/icons/event-tags.svg" alt="" />
+                      <div class="detail-tags" id="myshifts-detail-tags"></div>
+                    </div>
+                  </div>
+                </header>
+                <div class="myshifts-detail-body">
+                  <div class="myshifts-detail-row">
+                    <span class="myshifts-detail-label">Volunteer Instructions</span>
+                    <p id="myshifts-detail-instructions"></p>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </main>
+
+      <!-- In the design's nav, not yet designed as a screen. It carries the
+           shared chrome so the split and the sidebar read correctly, and says
+           plainly that there is nothing here yet. -->
+      <main id="page-home" class="page" hidden>
+        <header class="page-header">
+          <div>
+            <h1>Home</h1>
+          </div>
+        </header>
+
+        <div class="page-band-end page-band-plain"></div>
+
+        <div class="page-body">
+          <div class="page-placeholder">
+            <p>The dashboard home screen is in the design but not built yet.</p>
+          </div>
+        </div>
+      </main>
+
+      <!-- In the design's nav, not yet designed as a screen. It carries the
+           shared chrome so the split and the sidebar read correctly, and says
+           plainly that there is nothing here yet. -->
+      <main id="page-application" class="page" hidden>
+        <header class="page-header">
+          <div>
+            <h1>Application</h1>
+          </div>
+        </header>
+
+        <div class="page-band-end page-band-plain"></div>
+
+        <div class="page-body">
+          <div class="page-placeholder">
+            <p>Application review is in the design but not built yet.</p>
+          </div>
+        </div>
+      </main>
+
+      <!-- In the design's nav, not yet designed as a screen. It carries the
+           shared chrome so the split and the sidebar read correctly, and says
+           plainly that there is nothing here yet. -->
+      <main id="page-gallery" class="page" hidden>
+        <header class="page-header">
+          <div>
+            <h1>Gallery</h1>
+          </div>
+        </header>
+
+        <div class="page-band-end page-band-plain"></div>
+
+        <div class="page-body">
+          <div class="page-placeholder">
+            <p>The gallery is in the design but not built yet.</p>
+          </div>
+        </div>
+      </main>
+
+      <!-- In the design's nav, not yet designed as a screen. It carries the
+           shared chrome so the split and the sidebar read correctly, and says
+           plainly that there is nothing here yet. -->
+      <main id="page-profile" class="page" hidden>
+        <header class="page-header">
+          <div>
+            <h1>Profile</h1>
+          </div>
+        </header>
+
+        <div class="page-band-end page-band-plain"></div>
+
+        <div class="page-body">
+          <div class="page-placeholder">
+            <p>Your profile screen is in the design but not built yet.</p>
+          </div>
+        </div>
+      </main>
+
+      <main id="page-teamfinder" class="page" hidden>
+        <header class="page-header">
+          <div>
+            <h1>Team Finder</h1>
+          </div>
+        </header>
+
+        <div class="teamfinder-chrome">
+          <div class="teamfinder-toolbar">
+            <div class="teamfinder-tabs" role="tablist" aria-label="Team Finder views">
+              <button class="teamfinder-tab is-active" type="button" role="tab" aria-selected="true" data-tf-tab="hackers" id="tf-tab-hackers">Hackers</button>
+              <button class="teamfinder-tab" type="button" role="tab" aria-selected="false" data-tf-tab="teams" id="tf-tab-teams">Teams</button>
+              <button class="teamfinder-tab" type="button" role="tab" aria-selected="false" data-tf-tab="requests" id="tf-tab-requests">Requests<span class="teamfinder-tab-count" id="tf-tab-requests-count" aria-hidden="true" hidden></span></button>
+              <button class="teamfinder-tab" type="button" role="tab" aria-selected="false" data-tf-tab="manage" id="tf-tab-manage">Manage Team</button>
+            </div>
+            <div class="teamfinder-search-wrap">
+              <div class="teamfinder-search-shell">
+                <div class="teamfinder-search">
+                  <img class="teamfinder-search-icon" src="./assets/icons/search.svg" alt="" width="14" height="14" />
+                  <div class="teamfinder-search-track">
+                    <span class="teamfinder-search-chip" id="teamfinder-search-chip" hidden></span>
+                    <input id="teamfinder-search" type="search" placeholder="Search…" autocomplete="off" aria-label="Search" />
+                  </div>
+                </div>
+              </div>
+              <div class="teamfinder-search-popup" id="teamfinder-search-popup" hidden role="listbox" aria-label="Search by"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="teamfinder-layout">
+          <aside class="teamfinder-sidebar" aria-label="Filters">
+            <div class="teamfinder-sidebar-intro" id="teamfinder-sidebar-intro">
+              <h2 id="teamfinder-sidebar-title">Hackers</h2>
+              <p id="teamfinder-sidebar-desc">List of all hackers participating.</p>
+              <div class="teamfinder-sidebar-actions" id="teamfinder-sidebar-actions" hidden>
+                <button class="button primary-button" type="button" data-action="join-team-code">Enter team code</button>
+                <button class="button" type="button" data-action="create-team">Create new team</button>
+              </div>
+            </div>
+            <div class="teamfinder-filter-groups" id="teamfinder-filters">
+              <section class="teamfinder-filter-group" data-filter-group="teamStatus" hidden>
+                <h2>Team Status</h2>
+                <label><input type="checkbox" value="In a team" /> In a team</label>
+                <label><input type="checkbox" value="Solo" /> Solo</label>
+              </section>
+
+              <section class="teamfinder-filter-group" data-filter-group="hackerType">
+                <h2>Hacker Type</h2>
+                <label><input type="checkbox" value="Analytical" /> Analytical</label>
+                <label><input type="checkbox" value="Ambitious" /> Ambitious</label>
+                <label><input type="checkbox" value="Artistic" /> Artistic</label>
+                <label><input type="checkbox" value="Driver" /> Driver</label>
+              </section>
+
+              <section class="teamfinder-filter-group" data-filter-group="skills">
+                <h2>Skills</h2>
+                <label><input type="checkbox" value="Design" /> Design</label>
+                <label><input type="checkbox" value="Machine Learning" /> Machine Learning</label>
+                <label><input type="checkbox" value="Hardware" /> Hardware</label>
+                <label><input type="checkbox" value="Mobile Apps" /> Mobile Apps</label>
+                <label><input type="checkbox" value="Web Apps" /> Web Apps</label>
+                <label><input type="checkbox" value="Software" /> Software</label>
+              </section>
+
+              <section class="teamfinder-filter-group" data-filter-group="projects">
+                <h2>Projects</h2>
+                <label><input type="checkbox" value="Fintech" /> Fintech</label>
+                <label><input type="checkbox" value="Cybersecurity" /> Cybersecurity</label>
+                <label><input type="checkbox" value="Game Development" /> Game Development</label>
+                <label><input type="checkbox" value="AR / VR" /> AR / VR</label>
+                <label><input type="checkbox" value="Consumer" /> Consumer</label>
+                <label><input type="checkbox" value="Transportation" /> Transportation</label>
+              </section>
+            </div>
+            <div class="teamfinder-filter-groups" id="teamfinder-request-filters" hidden>
+              <section class="teamfinder-filter-group" data-filter-group="requestDirection">
+                <h2>Team Status</h2>
+                <label><input type="checkbox" value="Incoming" /> Incoming</label>
+                <label><input type="checkbox" value="Requested" /> Requested</label>
+              </section>
+
+              <section class="teamfinder-filter-group" data-filter-group="requestRecency">
+                <h2>Recency</h2>
+                <label><input type="checkbox" value="New" /> New</label>
+                <label><input type="checkbox" value="Old" /> Old</label>
+              </section>
+
+              <section class="teamfinder-filter-group" data-filter-group="requestStatus">
+                <h2>Status</h2>
+                <label><input type="checkbox" value="Pending" /> Pending</label>
+                <label><input type="checkbox" value="Declined" /> Declined</label>
+              </section>
+            </div>
+            <button class="teamfinder-clear-filters" id="teamfinder-clear-filters" type="button" hidden>
+              Clear all filters
+            </button>
+          </aside>
+
+          <section class="teamfinder-main" aria-label="Team Finder results">
+            <div class="teamfinder-panel-shell">
+              <div class="teamfinder-panel-card" id="teamfinder-panel-card">
+                <div class="teamfinder-panel is-active" id="tf-panel-hackers" role="tabpanel" aria-labelledby="tf-tab-hackers"></div>
+                <div class="teamfinder-panel" id="tf-panel-teams" role="tabpanel" aria-labelledby="tf-tab-teams" hidden></div>
+                <div class="teamfinder-panel" id="tf-panel-requests" role="tabpanel" aria-labelledby="tf-tab-requests" hidden></div>
+                <div class="teamfinder-panel" id="tf-panel-manage" role="tabpanel" aria-labelledby="tf-tab-manage" hidden></div>
+              </div>
+              <button class="teamfinder-scroll-hint" id="teamfinder-scroll-hint" type="button" hidden aria-label="Scroll for more">
+                <span class="teamfinder-scroll-hint-circle" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6.5L8 10.5L12 6.5" stroke="#A1A1AA" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <button
+          class="teamfinder-help-button"
+          type="button"
+          id="teamfinder-help-button"
+          aria-label="How Team Finder works"
+          aria-haspopup="dialog"
+          aria-controls="teamfinder-help-dialog"
+        >
+          ?
+        </button>
+      </main>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="event-detail-backdrop" id="event-detail-backdrop" hidden></div>
+    <dialog
+      class="event-detail-dialog"
+      id="event-detail-dialog"
+      tabindex="-1"
+      aria-labelledby="detail-title"
+      aria-describedby="detail-description"
+    >
+      <article class="event-detail-card">
+        <div class="detail-actions" aria-label="Event actions">
+          <button class="detail-icon-button" type="button" id="detail-edit" aria-label="Edit event">
+            <img src="./assets/icons/event-edit.svg" alt="" />
+          </button>
+          <button class="detail-icon-button" type="button" id="detail-delete" aria-label="Delete event">
+            <img src="./assets/icons/event-delete.svg" alt="" />
+          </button>
+          <button class="detail-icon-button" type="button" id="detail-close" aria-label="Close details">
+            <img src="./assets/icons/event-close.svg" alt="" />
+          </button>
+        </div>
+
+        <header class="detail-heading">
+          <h2 id="detail-title"></h2>
+          <p id="detail-datetime"></p>
+        </header>
+
+        <div class="detail-content">
+          <div class="detail-row">
+            <img src="./assets/icons/event-location.svg" alt="" />
+            <p id="detail-location"></p>
+          </div>
+          <div class="detail-row">
+            <img src="./assets/icons/event-description.svg" alt="" />
+            <p id="detail-description"></p>
+          </div>
+          <div class="detail-row detail-tags-row">
+            <img src="./assets/icons/event-tags.svg" alt="" />
+            <div class="detail-tags" id="detail-tags"></div>
+          </div>
+        </div>
+      </article>
+    </dialog>
+
+    <dialog
+      class="event-dialog"
+      id="event-dialog"
+      aria-labelledby="dialog-title"
+    >
+      <form id="event-form" method="dialog" novalidate>
+        <div class="dialog-header">
+          <h2 id="dialog-title">Event Details</h2>
+          <button class="close-button" type="button" id="close-dialog" aria-label="Close">
+            <img src="./assets/icons/close.svg" alt="" />
+          </button>
+        </div>
+
+        <div class="form-grid">
+          <label class="field full">
+            <span>Event Name*</span>
+            <input name="name" required placeholder="Title" />
+            <p class="field-error" data-field-error="name" hidden>
+              <img class="form-error-icon" src="./assets/icons/form-error.svg" alt="" />
+              <span class="field-error-text"></span>
+            </p>
+          </label>
+          <label class="field full">
+            <span>Description</span>
+            <textarea name="description" rows="1" placeholder="Event details"></textarea>
+          </label>
+          <label class="field full">
+            <span>Location</span>
+            <input name="location" placeholder="Add location" />
+          </label>
+          <label class="field">
+            <span>Date*</span>
+            <select class="styled-select" name="day" id="day-select" required></select>
+            <p class="field-error" data-field-error="day" hidden>
+              <img class="form-error-icon" src="./assets/icons/form-error.svg" alt="" />
+              <span class="field-error-text"></span>
+            </p>
+          </label>
+          <label class="field">
+            <span>Start Time*</span>
+            <input name="start" type="time" min="00:00" max="23:59" step="60" required />
+            <p class="field-error" data-field-error="start" hidden>
+              <img class="form-error-icon" src="./assets/icons/form-error.svg" alt="" />
+              <span class="field-error-text"></span>
+            </p>
+          </label>
+          <label class="field">
+            <span>End Time*</span>
+            <input name="end" type="time" min="00:00" max="23:59" step="60" required />
+            <p class="field-error" data-field-error="end" hidden>
+              <img class="form-error-icon" src="./assets/icons/form-error.svg" alt="" />
+              <span class="field-error-text"></span>
+            </p>
+          </label>
+          <div class="field full">
+            <span>Event Type*</span>
+            <div class="multi-select" id="type-multi-select">
+              <button
+                class="multi-select-trigger"
+                type="button"
+                id="type-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="type-menu"
+              >
+                <div class="multi-select-tags" id="type-tags"></div>
+                <span class="multi-select-placeholder" id="type-placeholder">Select event types</span>
+                <span class="select-chevron" aria-hidden="true"></span>
+              </button>
+              <div class="multi-select-menu" id="type-menu" role="listbox" hidden>
+                <label class="multi-select-option">
+                  <input type="checkbox" name="type" value="Ceremony" />
+                  <span>Ceremony</span>
+                </label>
+                <label class="multi-select-option">
+                  <input type="checkbox" name="type" value="Food" />
+                  <span>Food</span>
+                </label>
+                <label class="multi-select-option">
+                  <input type="checkbox" name="type" value="Workshop" />
+                  <span>Workshop</span>
+                </label>
+                <label class="multi-select-option">
+                  <input type="checkbox" name="type" value="Social" />
+                  <span>Social</span>
+                </label>
+              </div>
+            </div>
+            <p class="field-error" data-field-error="type" hidden>
+              <img class="form-error-icon" src="./assets/icons/form-error.svg" alt="" />
+              <span class="field-error-text"></span>
+            </p>
+          </div>
+          <div class="field full">
+            <span>Assign Shifts</span>
+            <div class="multi-select" id="shift-multi-select">
+              <button
+                class="multi-select-trigger"
+                type="button"
+                id="shift-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="shift-menu"
+              >
+                <div class="multi-select-tags" id="shift-tags"></div>
+                <span class="multi-select-placeholder" id="shift-placeholder">Select shifts</span>
+                <span class="select-chevron" aria-hidden="true"></span>
+              </button>
+              <div class="multi-select-menu" id="shift-menu" role="listbox" hidden>
+                <label class="multi-select-option">
+                  <input type="checkbox" name="shift" value="Organizers" />
+                  <span>Organizers</span>
+                </label>
+                <label class="multi-select-option">
+                  <input type="checkbox" name="shift" value="Volunteers" />
+                  <span>Volunteers</span>
+                </label>
+                <label class="multi-select-option">
+                  <input type="checkbox" name="shift" value="Mentors" />
+                  <span>Mentors</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <label class="field full">
+            <span>Notes</span>
+            <textarea name="notes" rows="1" placeholder="Volunteer instructions"></textarea>
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="danger-button" type="button" id="delete-button" hidden>Delete event</button>
+          <span class="action-spacer"></span>
+          <button class="text-button cancel-button" type="button" id="cancel-button">Cancel</button>
+          <button class="button submit-button" type="submit" id="submit-button">Create Event</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog
+      class="teamfinder-note-dialog"
+      id="teamfinder-note-dialog"
+      aria-labelledby="teamfinder-note-title"
+    >
+      <form id="teamfinder-note-form" method="dialog">
+        <div class="dialog-header">
+          <h2 id="teamfinder-note-title">Attach a note?</h2>
+          <button class="close-button" type="button" id="teamfinder-note-close" aria-label="Close">
+            <img src="./assets/icons/close.svg" alt="" width="16" height="16" />
+          </button>
+        </div>
+        <p class="teamfinder-note-copy">
+          Personalize your request to <strong id="teamfinder-note-name">this hacker</strong> with an optional note.
+        </p>
+        <label class="field teamfinder-note-field">
+          <span class="visually-hidden">Optional note</span>
+          <textarea
+            id="teamfinder-note-input"
+            rows="3"
+            maxlength="280"
+            placeholder="Add a note (optional)"
+          ></textarea>
+        </label>
+        <div class="dialog-actions teamfinder-note-actions">
+          <button class="text-button" type="button" id="teamfinder-note-skip">Send without a note</button>
+          <button class="button primary-button" type="submit" id="teamfinder-note-send">Send request</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog
+      class="teamfinder-note-dialog teamfinder-confirm-dialog"
+      id="teamfinder-confirm-dialog"
+      aria-labelledby="teamfinder-confirm-title"
+    >
+      <form id="teamfinder-confirm-form" method="dialog">
+        <div class="dialog-header">
+          <h2 id="teamfinder-confirm-title">Confirm change</h2>
+          <button class="close-button" type="button" id="teamfinder-confirm-close" aria-label="Close">
+            <img src="./assets/icons/close.svg" alt="" width="16" height="16" />
+          </button>
+        </div>
+        <p class="teamfinder-note-copy" id="teamfinder-confirm-copy">
+          Are you sure you want to make this change?
+        </p>
+        <div class="dialog-actions teamfinder-note-actions">
+          <button class="text-button" type="button" id="teamfinder-confirm-cancel">Cancel</button>
+          <button class="button primary-button" type="submit" id="teamfinder-confirm-submit">Confirm</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog
+      class="teamfinder-note-dialog teamfinder-help-dialog"
+      id="teamfinder-help-dialog"
+      aria-labelledby="teamfinder-help-title"
+    >
+      <form method="dialog" id="teamfinder-help-form">
+        <div class="dialog-header">
+          <h2 id="teamfinder-help-title">How it works</h2>
+          <button class="close-button" type="button" id="teamfinder-help-close" aria-label="Close">
+            <img src="./assets/icons/close.svg" alt="" width="16" height="16" />
+          </button>
+        </div>
+        <div class="teamfinder-help-body">
+          <p>
+            Connect with teammates (max 4). Teams are not official until registered on Devpost.
+          </p>
+          <ol class="teamfinder-help-steps">
+            <li>Click <strong>Create Team</strong> and provide details about the type of team you’re looking to form.</li>
+            <li>Input the pin of an already existing team.</li>
+            <li>Request to join publicly listed teams.</li>
+          </ol>
+        </div>
+        <div class="dialog-actions teamfinder-note-actions">
+          <button class="button primary-button" type="submit">Got it</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog
+      class="teamfinder-note-dialog"
+      id="teamfinder-join-dialog"
+      aria-labelledby="teamfinder-join-title"
+    >
+      <form id="teamfinder-join-form" method="dialog">
+        <div class="dialog-header">
+          <h2 id="teamfinder-join-title">Input team code</h2>
+          <button class="close-button" type="button" id="teamfinder-join-close" aria-label="Close">
+            <img src="./assets/icons/close.svg" alt="" width="16" height="16" />
+          </button>
+        </div>
+        <p class="teamfinder-note-copy">Enter the pin for an existing team to join it.</p>
+        <label class="field teamfinder-note-field">
+          <span class="visually-hidden">Team pin</span>
+          <input id="teamfinder-join-input" type="text" inputmode="numeric" maxlength="12" placeholder="Input pin" autocomplete="off" />
+        </label>
+        <div class="dialog-actions teamfinder-note-actions">
+          <button class="text-button" type="button" id="teamfinder-join-cancel">Cancel</button>
+          <button class="button primary-button" type="submit">Join team</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog
+      class="teamfinder-profile-dialog"
+      id="teamfinder-profile-dialog"
+      aria-labelledby="teamfinder-profile-title"
+    >
+      <div class="teamfinder-profile-shell">
+        <div class="teamfinder-profile-chrome">
+          <button class="close-button teamfinder-profile-close" type="button" id="teamfinder-profile-close" aria-label="Close">
+            <img src="./assets/icons/close.svg" alt="" width="16" height="16" />
+          </button>
+          <button class="button primary-button teamfinder-profile-request" type="button" id="teamfinder-profile-request">Request</button>
+        </div>
+        <h2 id="teamfinder-profile-title" class="visually-hidden">Profile</h2>
+
+        <div class="teamfinder-profile-body" id="teamfinder-profile-body"></div>
+      </div>
+    </dialog>
+
+    <template id="event-template">
+      <button class="calendar-event" type="button">
+        <strong></strong>
+        <span class="event-location"></span>
+      </button>
+    </template>
+
+    <script src="./js/event-manager.js"></script>
+    <script src="./js/shift-manager.js"></script>
+    <script src="./js/team-finder.js"></script>
+    <!-- Dev-only token dials; inert unless the URL carries ?dials -->
+    <script type="module" src="./js/dials.js"></script>
+  </body>
+</html>

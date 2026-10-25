@@ -1,0 +1,24 @@
+{
+  "name": "uofthacks-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hi-fi interactive prototype of the UofTHacks dashboard: Event Manager, Shift Manager, My Shifts and Team Finder. Plain HTML, CSS and JavaScript; no build step.",
+  "scripts": {
+    "start": "python3 -m http.server 4173",
+    "dials": "echo 'Open http://localhost:4173/?dials' && python3 -m http.server 4173"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nxtyu/uofthacks-2.git"
+  },
+  "homepage": "https://github.com/nxtyu/uofthacks-2#readme",
+  "bugs": {
+    "url": "https://github.com/nxtyu/uofthacks-2/issues"
+  },
+  "author": "Natalie Yu",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "dialkit": "1.4.3",
+    "motion": "13.1.1"
+  }
+}
