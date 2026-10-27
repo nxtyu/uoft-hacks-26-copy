@@ -1,11 +1,5 @@
-# UofTHacks Dashboard
+prototype of the shift manager and team finder tools for the dashboard.
 
-A prototype of the Shift Manager and Team Finder tools for the dashboard.
+flow: event is created in the event manager --> becomes a event in shift manager --> organizers can select shifts and assign them to volunteers
 
-**Flow:** an event is created in Event Manager → it becomes an event in Shift
-Manager → organizers select shifts and assign them to volunteers.
-
-This is a working prototype that shows how the flow works and how everything
-fits together. It is not the final design: it isn't polished and doesn't use
-the final design system. The final designs are in Figma; this prototype shows
-how everything comes together.
+just a working prototype to show how the flow works and how everything fits together. it is not the final design. is not polished and does not use the final design system on figma. final designs are on figma, but this prototype shows how everything comes together.
