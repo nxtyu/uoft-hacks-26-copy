@@ -1,12 +1,17 @@
-# UofTHacks Dashboard — design prototype
+# UofTHacks Dashboard — interactive wireframe
 
-A high-fidelity, clickable prototype of the UofTHacks organizer and volunteer
-dashboard. It is the reference for **how the screens should look and behave**,
-not production code: it runs on sample data, has no backend, and is written in
-plain HTML, CSS and JavaScript with no framework or build step.
+A **lo-fi, clickable wireframe** of the UofTHacks organizer and volunteer
+dashboard. It exists to show the development team how the tools work: what
+each screen does, how the interactions behave, and how one tool leads into
+the next (an event created in Event Manager becomes a shift in Shift Manager,
+which shows up in a volunteer's My Shifts).
 
-When something here disagrees with the Figma file, treat this prototype as the
-more recent decision; it was refined after the Figma frames were drawn.
+**It is not the final design.** It isn't polished and doesn't use the final
+design system, so don't copy its colors, type or spacing. Take the visual
+design from the Figma file, and use this wireframe for flows and behavior.
+
+It also isn't production code: it runs on sample data, has no backend, and is
+written in plain HTML, CSS and JavaScript with no framework or build step.
 
 ## Run it
 
@@ -186,9 +191,11 @@ assets/
 - **Responsive.** Layouts adapt at roughly 1100px, 900px and 650px. The
   sidebar collapses to an icon rail, then to a top bar.
 
-## Design system
+## Styling
 
-Everything visual is driven by CSS custom properties in **`css/tokens.css`**.
+This is the wireframe's own styling, not the final design system; the Figma
+file is the source for the real one. Everything visual is driven by CSS
+custom properties in **`css/tokens.css`**.
 
 - **Type roles** set a size, weight and line height that go together, named
   by what the text is: subject, support, heading, item, body and meta. Pick

@@ -2,7 +2,7 @@
   "name": "uofthacks-dashboard",
   "version": "1.0.0",
   "private": true,
-  "description": "Hi-fi interactive prototype of the UofTHacks dashboard: Event Manager, Shift Manager, My Shifts and Team Finder. Plain HTML, CSS and JavaScript; no build step.",
+  "description": "Lo-fi interactive wireframe of the UofTHacks dashboard: Event Manager, Shift Manager, My Shifts and Team Finder. Plain HTML, CSS and JavaScript; no build step.",
   "scripts": {
     "start": "python3 -m http.server 4173",
     "dials": "echo 'Open http://localhost:4173/?dials' && python3 -m http.server 4173"
