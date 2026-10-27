@@ -22,13 +22,15 @@ const TEAMFINDER_HACKERS = [
     program: "Computer Science",
     school: "University of Toronto",
     about: "Here to ship a polished student product with strong UX — ideally something people would actually use after the weekend.",
+    bringToTeam: "Turning rough ideas into flows people can actually use — wireframes by hour two, a working frontend by Saturday night.",
+    funAnswer: "I keep a running list of every app onboarding I've screenshotted. It's over 400 now.",
     skills: ["Design", "Web Apps", "Software"],
     projects: ["Consumer", "Fintech"],
     hackerType: ["Ambitious"],
     discord: "timj_22",
     experiences: [
-      { title: "Product Design Intern @ Shopify", period: "2025", detail: "Worked on the merchant onboarding flow." },
-      { title: "Frontend Developer @ UofT Hacks", period: "2024", detail: "Built and maintained the event dashboard." },
+      { title: "Product Design Intern @ Shopify", period: "2025", details: ["Redesigned the merchant onboarding flow.", "Ran usability tests with 12 new merchants."] },
+      { title: "Frontend Developer @ UofT Hacks", period: "2024", details: ["Built and maintained the event dashboard.", "Shipped the volunteer check-in screen."] },
     ],
     socials: { website: "timjones.ca", github: "@timjones", linkedin: "@tim-jones-22" },
     teamId: "t1",
@@ -42,13 +44,15 @@ const TEAMFINDER_HACKERS = [
     program: "Computer Science",
     school: "University of Waterloo",
     about: "Want to build a hardware + ML prototype that feels magical in demo — sensors, firmware, and a thin companion app.",
+    bringToTeam: "Firmware, sensor wiring and the ML model on top. I can get a board talking to a laptop fast.",
+    funAnswer: "I once built a plant that texts me when it needs water. It texts a lot.",
     skills: ["Hardware", "Machine Learning", "Software"],
     projects: ["Transportation", "AR / VR"],
     hackerType: ["Analytical", "Artistic"],
     discord: "ava.c",
     experiences: [
-      { title: "Hardware Intern @ Tesla", period: "2025", detail: "Sensor calibration for the battery team." },
-      { title: "Research Assistant @ Waterloo Robotics", period: "2024", detail: "Built firmware for an autonomous rover." },
+      { title: "Hardware Intern @ Tesla", period: "2025", details: ["Calibrated sensors for the battery team.", "Wrote test rigs for thermal monitoring."] },
+      { title: "Research Assistant @ Waterloo Robotics", period: "2024", details: ["Built firmware for an autonomous rover.", "Tuned its obstacle-avoidance model."] },
     ],
     socials: { github: "@avachen", linkedin: "@ava-chen", x: "@avabuilds" },
     teamId: null,
@@ -62,6 +66,8 @@ const TEAMFINDER_HACKERS = [
     program: "Engineering Science",
     school: "University of Toronto",
     about: "Looking to join a playful AR/game idea and own the frontend so the demo looks intentional, not slapped together.",
+    bringToTeam: "Frontend polish: motion, layout and the small details that make a demo feel finished.",
+    funAnswer: "I've beaten every Zelda game, but I still can't parallel park.",
     skills: ["Design", "Mobile Apps", "Web Apps"],
     projects: ["AR / VR", "Game Development"],
     hackerType: ["Artistic"],
@@ -78,6 +84,8 @@ const TEAMFINDER_HACKERS = [
     program: "Electrical Engineering",
     school: "University of Toronto",
     about: "Here to build secure, reliable backend for a fintech or security tool — infra that won’t fall over during judging.",
+    bringToTeam: "Backend and infra that stays up during judging — auth, databases and deploys.",
+    funAnswer: "My terminal theme changes with the seasons. Right now it's autumn.",
     skills: ["Web Apps", "Software"],
     projects: ["Cybersecurity", "Fintech"],
     hackerType: ["Driver", "Analytical"],
@@ -93,6 +101,8 @@ const TEAMFINDER_HACKERS = [
     program: "Computer Science",
     school: "York University",
     about: "Want a clear problem in fintech or HCI where ML actually helps — clean data story and a demo people understand.",
+    bringToTeam: "Data cleaning and modelling, plus explaining the results so non-ML people get it.",
+    funAnswer: "I can name every Toronto subway station in order, both directions.",
     skills: ["Machine Learning", "Software", "Web Apps"],
     projects: ["Fintech", "Consumer"],
     hackerType: ["Analytical", "Ambitious"],
@@ -108,6 +118,8 @@ const TEAMFINDER_HACKERS = [
     program: "Engineering",
     school: "University of Toronto",
     about: "Here for an IoT or game build with real hardware in the loop — something you can hold and show, not just slides.",
+    bringToTeam: "Hands-on hardware: soldering, 3D printing and making things that survive a demo table.",
+    funAnswer: "I build tiny arcade cabinets out of cereal boxes.",
     skills: ["Hardware", "Mobile Apps", "Design"],
     projects: ["Transportation", "Game Development"],
     hackerType: ["Driver"],
@@ -123,6 +135,8 @@ const TEAMFINDER_HACKERS = [
     program: "Rotman Commerce",
     school: "University of Toronto",
     about: "Want to shape a fintech/HCI product story — research, pitch, and a polished narrative for the final demo.",
+    bringToTeam: "User research, the pitch and slides that tell one clear story.",
+    funAnswer: "I've interviewed my grandma about her banking app three times. She has opinions.",
     skills: ["Design", "Software"],
     projects: ["Fintech", "Consumer"],
     hackerType: ["Ambitious", "Artistic"],
@@ -138,6 +152,8 @@ const TEAMFINDER_HACKERS = [
     program: "Computer Engineering",
     school: "McMaster University",
     about: "Here to go deep on an ambitious cybersecurity or AR build and leave with something that feels production-adjacent.",
+    bringToTeam: "Security thinking from the start, and the stubbornness to finish an ambitious build.",
+    funAnswer: "I collect old encryption puzzles and solve one every Sunday.",
     skills: ["Web Apps", "Software"],
     projects: ["Cybersecurity", "AR / VR"],
     hackerType: ["Ambitious", "Driver"],
@@ -153,6 +169,8 @@ const TEAMFINDER_HACKERS = [
     program: "Cognitive Science",
     school: "University of Toronto",
     about: "Want to build an accessible HCI or game experience — thoughtful interactions, not just a feature checklist.",
+    bringToTeam: "Accessible, considered interactions — keyboard, screen reader and colour contrast included.",
+    funAnswer: "I've watched every Pixar short in release order, twice.",
     skills: ["Design", "Web Apps", "Mobile Apps"],
     projects: ["Consumer", "Game Development"],
     hackerType: ["Artistic", "Analytical"],
@@ -168,6 +186,8 @@ const TEAMFINDER_HACKERS = [
     program: "Computer Science",
     school: "University of Toronto",
     about: "Here to prototype a cybersecurity education tool students would actually open — sharp demo, clean story.",
+    bringToTeam: "Turning a technical topic into something students want to learn, with a sharp demo.",
+    funAnswer: "My cat has her own GitHub account. She commits more than me.",
     skills: ["Software", "Web Apps"],
     projects: ["Cybersecurity", "Consumer"],
     hackerType: ["Analytical"],
@@ -183,6 +203,8 @@ const TEAMFINDER_HACKERS = [
     program: "Engineering Science",
     school: "Western University",
     about: "Want a fintech build with real users in mind — payments flow, fraud edge cases, and a crisp pitch.",
+    bringToTeam: "Payments flows and the edge cases nobody thinks about until the demo breaks.",
+    funAnswer: "I track my coffee intake in a spreadsheet with conditional formatting.",
     skills: ["Software", "Web Apps", "Machine Learning"],
     projects: ["Fintech", "Cybersecurity"],
     hackerType: ["Ambitious", "Driver"],
@@ -198,6 +220,8 @@ const TEAMFINDER_HACKERS = [
     program: "Architecture",
     school: "University of Toronto",
     about: "Looking for an AR/VR spatial experience where design systems and presence matter as much as the tech.",
+    bringToTeam: "Spatial and AR design, prototyped in tools the team can iterate on together.",
+    funAnswer: "I sketch every building I walk into. Myhal is my favourite so far.",
     skills: ["Design", "Mobile Apps", "Hardware"],
     projects: ["AR / VR", "Consumer"],
     hackerType: ["Artistic"],
@@ -213,6 +237,8 @@ const TEAMFINDER_HACKERS = [
     program: "Computer Science",
     school: "University of Toronto",
     about: "Here to ship a tiny playable game loop — fun first, polish second, and something judges can try in 30 seconds.",
+    bringToTeam: "Fast game loops: I'll have something playable in the first few hours.",
+    funAnswer: "My first game was a Flappy Bird clone starring my dog.",
     skills: ["Software", "Design", "Mobile Apps"],
     projects: ["Game Development", "AR / VR"],
     hackerType: ["Ambitious", "Artistic"],
@@ -228,6 +254,8 @@ const TEAMFINDER_HACKERS = [
     program: "Statistics",
     school: "University of Toronto",
     about: "Want an IoT + data project where sensors feed a live dashboard people can understand at a glance.",
+    bringToTeam: "Sensor data piped into live dashboards that make sense at a glance.",
+    funAnswer: "I've run a weather station on my balcony since grade nine.",
     skills: ["Machine Learning", "Hardware", "Web Apps"],
     projects: ["Transportation", "Fintech"],
     hackerType: ["Analytical", "Driver"],
@@ -243,6 +271,8 @@ const TEAMFINDER_HACKERS = [
     program: "Rotman Commerce",
     school: "University of Toronto",
     about: "Here to help a team turn a messy idea into a clear product story — scope, users, and a confident final demo.",
+    bringToTeam: "Scoping: keeping the team focused on one thing we can finish and demo well.",
+    funAnswer: "I've been to 11 hackathons and still bring the same lucky hoodie.",
     skills: ["Design", "Software", "Web Apps"],
     projects: ["Consumer", "Fintech"],
     hackerType: ["Driver", "Ambitious"],
@@ -441,6 +471,10 @@ const teamfinderState = {
 };
 
 const TEAMFINDER_HACKER_PAGE_SIZE = 8;
+
+/* The design labels this row "Fun question"; swap in the real prompt once
+   the application form settles on one. */
+const TEAMFINDER_FUN_QUESTION = "Fun question";
 const TEAMFINDER_PROJECT_OPTIONS = ["Fintech", "Cybersecurity", "Game Development", "AR / VR", "Consumer", "Transportation"];
 const TEAMFINDER_SKILL_OPTIONS = [
   "Design",
@@ -489,10 +523,8 @@ const noteSkip = document.querySelector("#teamfinder-note-skip");
 const profileDialog = document.querySelector("#teamfinder-profile-dialog");
 const profileBody = document.querySelector("#teamfinder-profile-body");
 const profileTitle = document.querySelector("#teamfinder-profile-title");
-const profileClose = document.querySelector("#teamfinder-profile-close");
 const profileDismiss = document.querySelector("#teamfinder-profile-dismiss");
 const profileRequest = document.querySelector("#teamfinder-profile-request");
-const profileChrome = document.querySelector(".teamfinder-profile-chrome");
 const confirmDialog = document.querySelector("#teamfinder-confirm-dialog");
 const confirmForm = document.querySelector("#teamfinder-confirm-form");
 const confirmTitle = document.querySelector("#teamfinder-confirm-title");
@@ -565,11 +597,6 @@ function teamfinderTagList(values = [], limit = 2) {
   const shown = values.slice(0, limit);
   if (!shown.length) return `<span class="teamfinder-muted">No interests listed</span>`;
   return shown.map((value) => `<span class="teamfinder-tag">${value}</span>`).join("");
-}
-
-function teamfinderPlainList(values = [], fallback = "None listed") {
-  const shown = (values || []).filter(Boolean);
-  return shown.length ? shown.join(", ") : fallback;
 }
 
 function teamfinderHackerTeamLabel(hacker) {
@@ -1693,50 +1720,108 @@ function teamfinderChipRow(values) {
   `;
 }
 
-function teamfinderProfileSection(label, bodyHtml) {
+/* Both profile dialogs (hacker and team) share one layout: a top block of
+   who they are — name, subtitle, about, then interests and skills side by
+   side — beside a photo and socials, and below it labelled rows with the
+   label in a left column. */
+function teamfinderProfileGroup(label, bodyHtml) {
   return `
-    <section class="teamfinder-profile-section">
-      <h4 class="teamfinder-profile-section-title">${label}</h4>
+    <section class="teamfinder-profile-group">
+      <h4 class="teamfinder-profile-label">${label}</h4>
       ${bodyHtml}
     </section>
   `;
 }
 
-/* The design puts a school and a date range on one line; year is all this data
-   carries, so it takes the range slot rather than leaving it empty. */
-function teamfinderEducationCard(hacker) {
-  const school = hacker.school || "None listed";
-  const program = hacker.program || "";
-  const year = hacker.years || hacker.year || "";
+function teamfinderProfileRow(label, bodyHtml) {
   return `
-    <div class="teamfinder-profile-entry">
-      <div class="teamfinder-profile-entry-head">
-        <p class="teamfinder-profile-entry-title">${school}</p>
-        ${year ? `<p class="teamfinder-profile-entry-aside">${year}</p>` : ""}
+    <section class="teamfinder-profile-row">
+      <h4 class="teamfinder-profile-label">${label}</h4>
+      <div class="teamfinder-profile-row-body">${bodyHtml}</div>
+    </section>
+  `;
+}
+
+function teamfinderProfileText(value) {
+  return `<p class="teamfinder-profile-text">${value}</p>`;
+}
+
+/* Square photo slot. Without a photo it shows the initial, so the layout
+   holds its shape on sample data. */
+function teamfinderProfilePhoto(name, avatarUrl) {
+  if (avatarUrl) {
+    return `<div class="teamfinder-profile-photo" style="background-image: url('${avatarUrl}')" aria-hidden="true"></div>`;
+  }
+  const initial = (name || "?").trim().charAt(0).toUpperCase();
+  return `<div class="teamfinder-profile-photo" aria-hidden="true">${initial}</div>`;
+}
+
+function teamfinderProfileTop({ name, pronouns, subtitle, about, projects, skills, photoHtml, socialsHtml }) {
+  return `
+    <div class="teamfinder-profile-top">
+      <div class="teamfinder-profile-intro">
+        <div class="teamfinder-profile-headline">
+          <h3 class="teamfinder-profile-name">${name}</h3>
+          ${pronouns ? `<span class="teamfinder-profile-pronouns">(${pronouns})</span>` : ""}
+        </div>
+        <p class="teamfinder-profile-subtitle">${subtitle}</p>
+        <p class="teamfinder-profile-about">${about || "None listed"}</p>
+        <div class="teamfinder-profile-groups">
+          ${teamfinderProfileGroup("Project Interests", teamfinderChipRow(projects))}
+          ${teamfinderProfileGroup("Skills", teamfinderChipRow(skills))}
+        </div>
       </div>
-      ${program ? `<p class="teamfinder-profile-entry-sub">${program}</p>` : ""}
+      <div class="teamfinder-profile-aside">
+        ${photoHtml}
+        ${socialsHtml || ""}
+      </div>
     </div>
   `;
 }
 
-function teamfinderExperienceCards(experiences) {
-  return (experiences || [])
-    .map(
-      (item) => `
-      <div class="teamfinder-profile-entry">
-        <div class="teamfinder-profile-entry-head">
-          <p class="teamfinder-profile-entry-title">${item.title || ""}</p>
-          ${item.period ? `<p class="teamfinder-profile-entry-aside">${item.period}</p>` : ""}
-        </div>
-        ${
-          item.detail
-            ? `<ul class="teamfinder-profile-entry-list"><li>${item.detail}</li></ul>`
-            : ""
-        }
+/* A bordered entry: a role, or a team member. The aside holds a year or a
+   role; the lines below are bullets. */
+function teamfinderProfileEntry({ title, aside, lines = [] }) {
+  const list = lines.filter(Boolean);
+  return `
+    <div class="teamfinder-profile-entry">
+      <div class="teamfinder-profile-entry-head">
+        <p class="teamfinder-profile-entry-title">${title || ""}</p>
+        ${aside ? `<p class="teamfinder-profile-entry-aside">${aside}</p>` : ""}
       </div>
-    `
+      ${
+        list.length
+          ? `<ul class="teamfinder-profile-entry-list">${list.map((line) => `<li>${line}</li>`).join("")}</ul>`
+          : ""
+      }
+    </div>
+  `;
+}
+
+function teamfinderExperienceEntries(experiences) {
+  return (experiences || [])
+    .map((item) =>
+      teamfinderProfileEntry({
+        title: item.title,
+        aside: item.period,
+        lines: item.details || [item.detail],
+      })
     )
     .join("");
+}
+
+/* Sets the footer's Back + request pair, then opens the dialog. */
+function showTeamfinderProfile({ canRequest, requested }) {
+  if (profileRequest) {
+    profileRequest.hidden = !(canRequest || requested);
+    profileRequest.disabled = requested || !canRequest;
+    profileRequest.classList.toggle("is-requested", requested);
+    profileRequest.textContent = requested ? "Requested" : "Send request";
+  }
+  profileDialog.scrollTop = 0;
+  if (typeof profileDialog.showModal === "function" && !profileDialog.open) {
+    profileDialog.showModal();
+  }
 }
 
 const teamfinderHandle = (value) => String(value).replace(/^@/, "").trim();
@@ -1785,7 +1870,7 @@ function teamfinderSocialRows(hacker) {
     .map((key) => {
       const { icon, label, href } = TEAMFINDER_SOCIAL_ICONS[key];
       const value = values[key];
-      const glyph = `<img class="teamfinder-profile-social-icon" src="./assets/icons/${icon}.svg" alt="" width="15" height="15" />`;
+      const glyph = `<img class="teamfinder-profile-social-icon" src="./assets/icons/${icon}.svg" alt="" width="22" height="22" />`;
       /* The handle is only in the tooltip/label now, so it still reaches
          pointer and screen-reader users even though the row is icons only. */
       if (href) {
@@ -1843,11 +1928,6 @@ async function teamfinderCopySocial(value, label) {
 profileBody?.addEventListener("click", (event) => {
   /* The dialog sits outside #page-teamfinder, so the page's action delegate
      never sees these clicks — the dialog handles its own. */
-  if (event.target.closest('[data-action="close-profile"]')) {
-    event.preventDefault();
-    closeProfileDialog();
-    return;
-  }
   const trigger = event.target.closest('[data-action="copy-social"]');
   if (!trigger) return;
   event.preventDefault();
@@ -1863,57 +1943,30 @@ function openHackerProfileDialog(hackerId) {
   const requested = teamfinderState.requestedHackerIds.has(hacker.id);
   const onMyTeam = !!hacker.teamId && hacker.teamId === teamfinderState.joinedTeamId;
 
-  if (profileTitle) profileTitle.textContent = "Profile";
+  if (profileTitle) profileTitle.textContent = `${hacker.name}'s profile`;
 
-  const socialsHtml = teamfinderSocialRows(hacker);
-  const experiencesHtml = teamfinderExperienceCards(hacker.experiences);
+  const experiencesHtml = teamfinderExperienceEntries(hacker.experiences);
+  const rows = [
+    hacker.bringToTeam && teamfinderProfileRow("What do you bring to the team?", teamfinderProfileText(hacker.bringToTeam)),
+    hacker.funAnswer && teamfinderProfileRow(TEAMFINDER_FUN_QUESTION, teamfinderProfileText(hacker.funAnswer)),
+    experiencesHtml && teamfinderProfileRow("Experiences", `<div class="teamfinder-profile-entries">${experiencesHtml}</div>`),
+  ].filter(Boolean);
 
   profileBody.innerHTML = `
-    <div class="teamfinder-profile-headline">
-      <h3 class="teamfinder-profile-name">${hacker.name}</h3>
-      ${hacker.pronouns ? `<span class="teamfinder-profile-pronouns">(${hacker.pronouns})</span>` : ""}
-    </div>
-    <p class="teamfinder-card-subtitle teamfinder-profile-subtitle">${teamfinderHackerStudyLine(hacker)}</p>
-
-    <div class="teamfinder-profile-columns">
-      <div class="teamfinder-profile-column is-aside">
-        <p class="teamfinder-profile-about">${hacker.about || "None listed"}</p>
-        ${teamfinderProfileSection("Project Interests", teamfinderChipRow(hacker.projects))}
-        ${teamfinderProfileSection("Skills", teamfinderChipRow(hacker.skills))}
-        ${socialsHtml ? teamfinderProfileSection("Socials", socialsHtml) : ""}
-      </div>
-
-      <div class="teamfinder-profile-column is-main">
-        ${
-          experiencesHtml
-            ? teamfinderProfileSection(
-                "Experiences",
-                `<div class="teamfinder-profile-entries">${experiencesHtml}</div>`
-              )
-            : ""
-        }
-        <div class="teamfinder-profile-action-slot" id="teamfinder-profile-action-slot">
-          <button class="text-button" type="button" data-action="close-profile">Back</button>
-        </div>
-      </div>
-    </div>
+    ${teamfinderProfileTop({
+      name: hacker.name,
+      pronouns: hacker.pronouns,
+      subtitle: teamfinderHackerStudyLine(hacker),
+      about: hacker.about,
+      projects: hacker.projects,
+      skills: hacker.skills,
+      photoHtml: teamfinderProfilePhoto(hacker.name, hacker.avatarUrl),
+      socialsHtml: teamfinderSocialRows(hacker),
+    })}
+    ${rows.length ? `<div class="teamfinder-profile-rows">${rows.join("")}</div>` : ""}
   `;
 
-  if (profileRequest) {
-    profileRequest.hidden = onMyTeam;
-    profileRequest.disabled = requested;
-    profileRequest.classList.toggle("is-requested", requested);
-    profileRequest.textContent = requested ? "Requested" : "Send request";
-    const slot = profileBody.querySelector("#teamfinder-profile-action-slot");
-    slot?.append(profileRequest);
-    /* The slot draws the divider, so it has to go when the button does —
-       otherwise a rule floats under About with nothing above it. */
-    if (slot) slot.hidden = onMyTeam;
-  }
-
-  if (typeof profileDialog.showModal === "function") {
-    profileDialog.showModal();
-  }
+  showTeamfinderProfile({ canRequest: !onMyTeam && !requested, requested });
 }
 
 function openTeamProfileDialog(teamId) {
@@ -1923,63 +1976,39 @@ function openTeamProfileDialog(teamId) {
   activeProfileHackerId = null;
   activeProfileTeamId = team.id;
   const requested = teamfinderState.requestedTeamIds.has(team.id);
-  const canRequest = team.openToMembers && team.size < team.maxSize && !requested;
+  const isMyTeam = team.id === teamfinderState.joinedTeamId;
+  const canRequest = !isMyTeam && team.openToMembers && team.size < team.maxSize && !requested;
   const members = TEAMFINDER_HACKERS.filter((item) => item.teamId === team.id);
 
-  if (profileTitle) profileTitle.textContent = "Team";
+  if (profileTitle) profileTitle.textContent = `${team.name} team profile`;
 
-  const memberList = members.length
-    ? members
-        .map(
-          (member) =>
-            `<p><span class="teamfinder-meta-label">${member.name}</span> ${teamfinderMemberEmail(member)}</p>`
+  const membersHtml = members.length
+    ? `<div class="teamfinder-profile-entries">${members
+        .map((member) =>
+          teamfinderProfileEntry({
+            title: member.name,
+            aside: member.pronouns,
+            lines: [teamfinderHackerStudyLine(member), teamfinderMemberEmail(member)],
+          })
         )
-        .join("")
-    : `<p class="teamfinder-muted">No members listed yet.</p>`;
+        .join("")}</div>`
+    : `<p class="teamfinder-profile-none">No members listed yet.</p>`;
 
   profileBody.innerHTML = `
-    <div class="teamfinder-profile-identity">
-      <div class="teamfinder-profile-avatar">
-        ${teamfinderAvatar(team.name, team.avatarUrl)}
-      </div>
-      <div class="teamfinder-profile-identity-copy">
-        <div class="teamfinder-profile-title-row">
-          <h3 class="teamfinder-profile-name">${team.name}</h3>
-        </div>
-        <p class="teamfinder-profile-education">${team.size}/${team.maxSize} members</p>
-      </div>
-    </div>
-
-    <div class="teamfinder-profile-details">
-      <p class="teamfinder-card-bio teamfinder-profile-bio">
-        <span class="teamfinder-meta-label">Description:</span> ${team.description || "None listed"}
-      </p>
-      <div class="teamfinder-profile-meta-list">
-        <p><span class="teamfinder-meta-label">Project Type:</span> ${teamfinderPlainList(team.projects)}</p>
-        <p><span class="teamfinder-meta-label">Skills:</span> ${teamfinderPlainList(team.skills)}</p>
-      </div>
-    </div>
-
-    <div class="teamfinder-profile-contact">
-      <h4 class="teamfinder-profile-contact-title">Members</h4>
-      <div class="teamfinder-profile-meta-list">
-        ${memberList}
-      </div>
+    ${teamfinderProfileTop({
+      name: team.name,
+      subtitle: `${team.size}/${team.maxSize} members`,
+      about: team.description,
+      projects: team.projects,
+      skills: team.skills,
+      photoHtml: teamfinderProfilePhoto(team.name, team.avatarUrl),
+    })}
+    <div class="teamfinder-profile-rows">
+      ${teamfinderProfileRow("Members", membersHtml)}
     </div>
   `;
 
-  if (profileRequest) {
-    profileRequest.hidden = !(canRequest || requested);
-    profileRequest.disabled = requested || !canRequest;
-    profileRequest.classList.toggle("is-requested", requested);
-    profileRequest.textContent = requested ? "Requested" : "Send request";
-    /* Reclaim it from the hacker modal's in-flow slot. */
-    profileChrome?.append(profileRequest);
-  }
-
-  if (typeof profileDialog.showModal === "function") {
-    profileDialog.showModal();
-  }
+  showTeamfinderProfile({ canRequest, requested });
 }
 
 /* ── Sending requests ────────────────────────────────────────────────── */
@@ -2308,9 +2337,6 @@ confirmDialog?.addEventListener("cancel", () => {
   pendingVisibilityConfirm = null;
 });
 
-profileClose?.addEventListener("click", () => {
-  closeProfileDialog();
-});
 
 profileDismiss?.addEventListener("click", () => {
   closeProfileDialog();
@@ -2333,6 +2359,12 @@ profileRequest?.addEventListener("click", () => {
     id: hacker?.id || activeProfileHackerId,
     name: hacker?.name || "this hacker",
   });
+});
+
+/* The shell fills the dialog, so a click that lands on the dialog itself is
+   a click on the backdrop. */
+profileDialog?.addEventListener("click", (event) => {
+  if (event.target === profileDialog) closeProfileDialog();
 });
 
 profileDialog?.addEventListener("cancel", () => {

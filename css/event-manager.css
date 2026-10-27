@@ -149,10 +149,6 @@
   background: var(--button-hover);
 }
 
-.month-chevron {
-  display: none;
-}
-
 .mini-calendar {
   position: absolute;
   top: calc(100% + 8px);
@@ -263,15 +259,6 @@
 
 .mini-day.is-active:hover {
   background: var(--tf-c-action-hover);
-}
-
-.mobile-nav {
-  display: none;
-}
-
-.mobile-nav:hover {
-  border-color: var(--button-hover-border);
-  background: var(--button-hover);
 }
 
 .calendar-scroll {
@@ -562,11 +549,6 @@
 .create-preview {
   border: 1px solid #b9c8e5;
   background: rgba(214, 227, 253, 0.55);
-}
-
-.drop-preview.is-invalid {
-  border-color: #bd5360;
-  background: rgba(189, 83, 96, 0.13);
 }
 
 .event-detail-backdrop {
@@ -993,14 +975,6 @@
   transform: translateY(-50%);
   pointer-events: none;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%23252525' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 12px 12px no-repeat;
-}
-
-.month-label-button .month-chevron {
-  display: none;
-}
-
-.month-label-button[aria-expanded="true"] .month-chevron {
-  display: none;
 }
 
 .type-tag {

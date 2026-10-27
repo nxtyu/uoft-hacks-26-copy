@@ -107,6 +107,30 @@
   --text-micro: 12px;        /* time axis, counts, badges */
   --text-event-title: 16px;  /* a calendar block's own name */
 
+  /* ── Type roles ─────────────────────────────────────────────────────────
+     One ramp for every page, taken from the Shift Manager assign panel.
+     Each role is a size, weight and line height that go together; use the
+     role that matches what the text is, not how big it should look.
+     Area runs light, so nothing reading as text goes below 600. */
+  --type-subject-size: 22px;     /* what a panel is about: an event, a person, a team */
+  --type-subject-weight: 800;
+  --type-subject-leading: 1.3;
+  --type-support-size: 16px;     /* the line under a subject: date and time, study line */
+  --type-support-weight: 700;
+  --type-support-leading: 24px;
+  --type-heading-size: 16px;     /* section headings: "Volunteer Shifts", "Skills" */
+  --type-heading-weight: 700;
+  --type-heading-leading: 1.55;
+  --type-item-size: 15px;        /* a name in a list: a slot, a member, a role */
+  --type-item-weight: 700;
+  --type-item-leading: 21px;
+  --type-body-size: 14px;        /* paragraphs: bios, notes, answers */
+  --type-body-weight: 700;
+  --type-body-leading: 24px;
+  --type-meta-size: 14px;        /* secondary detail: subtitles, emails, years, text buttons */
+  --type-meta-weight: 600;
+  --type-meta-leading: 22px;
+
   /* Hour height. A block needs to hold two lines of type plus its padding
      without clipping: 10 + 18 (title) + 6 (gap) + 16 (location) + 10 = 60,
      and the shortest event on the calendar is one hour. At 56 the location's
@@ -149,12 +173,39 @@
   --tf-text-body: 14px;          /* rail copy, filter options, row copy */
   --tf-text-manage-body: 14px;
   --tf-text-label: 14px;
-  --tf-text-card: 13px;          /* card bio + meta — Figma 11, bumped up */
+  --tf-text-card: 13px;          /* the "Full" badge on a team card */
   --tf-text-chip: 12px;
 
   --tf-weight-bold: 800;
   --tf-weight-strong: 700;
   --tf-weight-medium: 600;
+
+  /* ── Team Finder type roles ─────────────────────────────────────────────
+     Spacing from the Team Finder "Hackers" frame: roomy leading on running
+     copy. Running copy (bios, subtitles, filter options, descriptions) is
+     600, the same weight as an event's description in Shift Manager. Same role names as the --type-*
+     ramp above, so the two can be merged by pointing one at the other. */
+  --tf-type-subject-size: 22px;      /* profile name, team name in Manage */
+  --tf-type-subject-weight: 700;
+  --tf-type-subject-leading: 1.3;
+  --tf-type-support-size: 16px;      /* the line under a subject */
+  --tf-type-support-weight: 600;
+  --tf-type-support-leading: 24px;
+  --tf-type-heading-size: 16px;      /* "Hacker Type", "Incoming", "Skills" */
+  --tf-type-heading-weight: 600;
+  --tf-type-heading-leading: 1.5;
+  --tf-type-name-size: 17px;         /* card and request-row names */
+  --tf-type-name-weight: 700;
+  --tf-type-name-leading: 26px;
+  --tf-type-item-size: 15px;         /* a name in a list: member, switch, role */
+  --tf-type-item-weight: 600;
+  --tf-type-item-leading: 22px;
+  --tf-type-body-size: 14px;         /* bios, notes, answers */
+  --tf-type-body-weight: 600;
+  --tf-type-body-leading: 24px;
+  --tf-type-meta-size: 14px;         /* subtitles, emails, years */
+  --tf-type-meta-weight: 600;
+  --tf-type-meta-leading: 22px;
 
   /* ── Per-element type ───────────────────────────────────────────────────
      The scale above says how big "body" is; this layer says what each part
@@ -171,25 +222,25 @@
   --tf-el-tab-weight: 700;
 
   --tf-el-heading-size: 20px;
-  --tf-el-heading-weight: var(--tf-weight-bold);
+  --tf-el-heading-weight: var(--tf-type-name-weight);
 
-  --tf-el-railcopy-size: 15px;   /* Figma rail intro is SemiBold 13 */
-  --tf-el-railcopy-weight: 700;
+  --tf-el-railcopy-size: 15px;
+  --tf-el-railcopy-weight: var(--tf-type-body-weight);
 
-  --tf-el-filter-label-size: 16px;
-  --tf-el-filter-label-weight: 700;
+  --tf-el-filter-label-size: var(--tf-type-heading-size);
+  --tf-el-filter-label-weight: var(--tf-type-heading-weight);
   --tf-el-filter-option-size: 15px;
-  --tf-el-filter-option-weight: 600;
+  --tf-el-filter-option-weight: var(--tf-type-body-weight);
 
-  --tf-el-card-name-size: 17px;
-  --tf-el-card-name-weight: var(--tf-weight-bold);
-  --tf-el-card-bio-size: 14px;
-  --tf-el-card-bio-weight: 700;
-  --tf-el-card-meta-size: 14px;
-  --tf-el-card-meta-weight: 600;
-  --tf-el-card-meta-label-weight: 700;
-  --tf-el-card-chip-size: 12px;
-  --tf-el-card-chip-weight: 600;
+  --tf-el-card-name-size: var(--tf-type-name-size);
+  --tf-el-card-name-weight: var(--tf-type-name-weight);
+  --tf-el-card-bio-size: var(--tf-type-body-size);
+  --tf-el-card-bio-weight: var(--tf-type-body-weight);
+  --tf-el-card-meta-size: var(--tf-type-meta-size);
+  --tf-el-card-meta-weight: var(--tf-type-meta-weight);
+  --tf-el-card-meta-label-weight: 600;
+  --tf-el-card-chip-size: 13px;
+  --tf-el-card-chip-weight: var(--tf-type-body-weight);
   --tf-el-card-btn-size: 14px;
   --tf-el-card-btn-weight: 700;
   --tf-el-card-btn-border: 1px;
@@ -200,34 +251,30 @@
 
   /* Leading, per text block. These were one shared --tf-card-leading, so the
      bio and the meta rows could not be spaced apart from each other. */
-  --tf-el-card-name-leading: 28px;
-  --tf-el-card-bio-leading: 24px;
+  --tf-el-card-name-leading: var(--tf-type-name-leading);
+  --tf-el-card-bio-leading: var(--tf-type-body-leading);
   --tf-el-card-meta-leading: 23px;
 
   /* Card subtitle — the line directly under the name. In the design this is
      the same object on every tab: a hacker's program and school, a team's
      member count, a request's origin. Tertiary and regular, so it reads as
      an attribute of the name rather than a second heading. */
-  --tf-el-card-sub-size: var(--text-meta);
-  --tf-el-card-sub-weight: 600;
-  --tf-el-card-sub-leading: 22px;
+  --tf-el-card-sub-size: var(--tf-type-meta-size);
+  --tf-el-card-sub-weight: var(--tf-type-meta-weight);
+  --tf-el-card-sub-leading: var(--tf-type-meta-leading);
 
-  /* Same correction as the card equivalents — a request row's name is the
-     same object as a card's name (Figma 15 Bold), its subtitle the same as a
-     card's body (Figma 11 SemiBold), so they carry the same corrected values
-     rather than sitting a step smaller than everything around them. */
-  --tf-el-row-title-size: 17px;
-  --tf-el-row-title-weight: 600;
-  --tf-el-row-copy-size: 14px;
-  --tf-el-row-copy-weight: 500;
+  /* A request row's name is the same object as a card's name, and its
+     subtitle the same as a card's subtitle, so they share those values. */
+  --tf-el-row-title-size: var(--tf-el-card-name-size);
+  --tf-el-row-title-weight: var(--tf-el-card-name-weight);
+  --tf-el-row-copy-size: var(--tf-type-meta-size);
+  --tf-el-row-copy-weight: var(--tf-type-meta-weight);
 
-  /* Requests panel. Sizes are the Figma values carried through the same
-     correction as the rest of the page — Figma 15 -> 17, 11 -> 14, and
-     SemiBold -> 400 — so this panel sits on one scale with the others
-     rather than reintroducing the small type the dials were used to fix. */
-  --tf-el-section-size: 17px;      /* Figma 15 — "Incoming" / "Outgoing" */
-  --tf-el-section-weight: 500;     /* Figma SemiBold */
-  --tf-el-request-action-size: 14px; /* Figma 11 — Decline / Accept */
+  /* Requests panel. Section titles are headings and row text is meta, the
+     same roles every other page uses. */
+  --tf-el-section-size: var(--tf-type-heading-size);     /* "Incoming", "Members" */
+  --tf-el-section-weight: var(--tf-type-heading-weight);
+  --tf-el-request-action-size: 14px; /* Decline / Accept */
   --tf-request-card-pad: 24px;
   --tf-request-card-gap: 16px;
   --tf-request-section-gap: 40px;
@@ -245,7 +292,7 @@
   --tf-card-pad: 24px;
   --tf-grid-gap: 28px;
   --tf-card-border: 1px;        /* card hairline */
-  --tf-card-gap: 12px;          /* name row -> bio */
+  --tf-card-gap: 9px;           /* name row -> bio */
   --tf-card-bio-lines: 3;       /* bio clamp, per the design */
   --tf-card-action-gap: 32px;   /* body -> action row */
   --tf-card-action-pair-gap: 14px;  /* "View profile" -> "Request" */
@@ -256,7 +303,7 @@
   --tf-tab-gap: 48px;          /* between tab labels */
   --tf-rail-title-gap: 36px;   /* rail heading block -> filter groups */
   --tf-rail-group-gap: 32px;   /* between filter groups */
-  --tf-rail-option-gap: 8px;   /* between checkbox rows */
+  --tf-rail-option-gap: 11px;  /* between checkbox rows */
 
   /* The left title/description rail. Hackers/Teams draw it with
      .teamfinder-sidebar inside .teamfinder-layout; Requests/Manage draw it with

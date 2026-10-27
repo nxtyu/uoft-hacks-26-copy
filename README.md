@@ -23,6 +23,13 @@ Each page has its own URL hash, so you can link straight to one:
 After pulling changes, hard-refresh (Cmd+Shift+R) so the browser doesn't
 serve stale CSS or JS.
 
+## Deploy
+
+It's a static site with no build step. On Vercel, import the repo with the
+framework preset set to **Other**, leave the build command empty and the
+output directory as the repo root. Every push to `main` then redeploys. The
+`?dials` panel only works locally, because it loads from `node_modules`.
+
 ## How the prototype works
 
 The sidebar switches between pages inside one `index.html`. The demo is
@@ -104,11 +111,12 @@ Helping hackers form teams. It has four tabs. The demo hacker is Tim Jones,
 who is already on a team.
 
 - **Hackers:** cards for each hacker, 8 at a time with **Load more**. **View
-  profile** opens a full profile with education, experience and social
-  links. Click a social link to copy it, or to open it if it's a URL.
+  profile** opens their profile: bio, project interests, skills, photo and
+  socials, then "What do you bring to the team?", a fun question and their
+  experiences. Click a social link to copy it, or to open it if it's a URL.
   **Request** invites that hacker to your team.
-- **Teams:** team cards. **View** opens the team's profile, and **Request**
-  asks to join.
+- **Teams:** team cards. **View team** opens the team's profile in the same
+  layout, with its members listed below. **Request** asks to join.
 - **Requests:** incoming and outgoing requests, filterable by direction,
   recency and status. **Accept** or **Decline** incoming requests. The tab
   label shows a count of incoming requests.
@@ -118,10 +126,11 @@ who is already on a team.
   leave the team. After leaving, you can **join a team by code**. **Create
   team** is not built yet.
 
-Every request opens a dialog where you can add an optional note before
-sending. The search bar can be narrowed to hackers, keywords, a school or a
-team name, and the sidebar filters (team status, hacker type, skills, project interests)
-apply to both the Hackers and Teams tabs.
+Profiles close with **Back**, Escape, or a click outside the dialog. Every
+request opens a dialog where you can add an optional note before sending.
+The search bar can be narrowed to hackers, keywords, a school or a team
+name, and the sidebar filters (team status, hacker type, skills, project
+interests) apply to both the Hackers and Teams tabs.
 
 ## Reading the code
 
@@ -180,6 +189,19 @@ assets/
 ## Design system
 
 Everything visual is driven by CSS custom properties in **`css/tokens.css`**.
+
+- **Type roles** set a size, weight and line height that go together, named
+  by what the text is: subject, support, heading, item, body and meta. Pick
+  a role by what the text is (a section heading, a name in a list), not by
+  how big it should look.
+  - `--type-*` is the calendar pages' ramp, from the Shift Manager assign
+    panel.
+  - `--tf-type-*` is Team Finder's. Its running copy is 600, the same weight
+    as an event description in Shift Manager, with the roomier line spacing
+    of the Team Finder Hackers frame.
+
+  The two use the same role names, so they can be merged by pointing one set
+  at the other.
 
 - **`--tf-*`** is the design-system ramp: colors (`--tf-c-*`), type scale
   (`--tf-text-*`), weights (`--tf-weight-*`), radii (`--tf-radius-*`) and
