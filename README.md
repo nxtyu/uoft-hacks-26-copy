@@ -123,11 +123,6 @@ sending. The search bar can be narrowed to hackers, keywords, a school or a
 team name, and the sidebar filters (team status, hacker type, skills, project interests)
 apply to both the Hackers and Teams tabs.
 
-### Not designed yet
-
-**Home**, **Application**, **Gallery** and **Profile** are in the nav but
-show a placeholder.
-
 ## Reading the code
 
 Start with `index.html` to see a page's markup. Then open that page's script

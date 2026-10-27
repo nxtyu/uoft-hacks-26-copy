@@ -483,10 +483,8 @@ function setDashboardPage(page) {
   const showTeamFinder = page === "teamfinder";
   const showEvents = page === "events";
 
-  /* Show by id rather than by a fixed list of four page references: the nav
-     now also carries Home, Application, Gallery and Profile, which exist as
-     placeholder pages. Anything unknown falls back to Events so a bad hash
-     cannot leave the dashboard blank. */
+  /* Show by id; anything unknown falls back to Events so a bad hash cannot
+     leave the dashboard blank. */
   const target = document.querySelector(`#page-${CSS.escape(page || "events")}`) || pageEvents;
   document.querySelectorAll("main.page").forEach((node) => {
     node.hidden = node !== target;
@@ -497,10 +495,6 @@ function setDashboardPage(page) {
     shifts: "Shift Manager",
     myshifts: "My Shifts",
     teamfinder: "Team Finder",
-    home: "Home",
-    application: "Application",
-    gallery: "Gallery",
-    profile: "Profile",
   };
   document.title = `UofTHacks · ${titles[page] || "Event Manager"}`;
 

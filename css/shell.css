@@ -275,35 +275,6 @@ main {
   background: var(--tf-c-ground);
 }
 
-/* A page with no toolbar still needs the band to close at the same height
-   as Team Finder's tabs strip (title → 36px gap → 88px chrome). */
-.page > .page-band-end.page-band-plain {
-  box-sizing: border-box;
-  min-height: 88px;
-  margin-top: 36px;
-  padding-bottom: 0;
-}
-
-/* Placeholder body for the nav entries the design names but has no screen
-   for yet. Deliberately plain — it should read as "nothing here yet", not as
-   a designed empty state that someone might mistake for finished work. */
-.page-placeholder {
-  flex: 1;
-  display: grid;
-  place-items: center;
-  padding: 48px 24px;
-}
-
-.page-placeholder p {
-  margin: 0;
-  max-width: 34ch;
-  color: var(--tf-c-text-tertiary);
-  font-size: var(--tf-text-body);
-  line-height: 1.6;
-  text-align: center;
-  text-wrap: pretty;
-}
-
 /* Sits above the band's upward backdrop, which is painted by a child of the
    toolbar below it and would otherwise cover the title. */
 .page-header {
