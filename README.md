@@ -214,8 +214,7 @@ Everything visual is driven by CSS custom properties in **`css/tokens.css`**.
   weight without moving anything else.
 - **Event colors** (default, food, workshop, social) are tokens too, so event
   types can be re-colored in one place.
-- **Typeface:** Area, in six weights. Check the font license before shipping
-  it in production.
+- **Typeface:** Area, in six weights.
 
 The stylesheets are commented heavily with the *why* behind decisions, such as
 contrast fixes and alignment choices. Read those comments before changing a
